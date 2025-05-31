@@ -54,5 +54,90 @@
     "summary": "s\n.\n \nEmplo ys",
     "raw_text": "\u0950\n \n\u0928\u092e\u0903\n \n\u0000\u0938\u0926\u094d\u0927\u092e \u094d\n \n \n \n \n \n \n  \nPranamya\n \nJain\n            \n \n \n+91\n \n9887521332\n  \n pranamyajeet@gmail.com      LinkedIn  \n Github \nEducation \nRamaiah\n \nInstitut e\n \nof\n \nTechnology\n \n2022\n \n-\n \n2026\n \nB.E\n \nin\n \nArtificial\n \nIntelligenc e\n  \nand\n \nData\n \nScienc e\n \n8.22/10\n \nCGPA\n Work Experience \nInfosys\n \nSpringboar d\n \nNovember\n \n2024\n \n\u2013\n \nJanuar y\n \n2025\n \nProject\n \nAI\n \nIntern\n \nRemot e\n \n\u2022\n \nBuilt\n \na\n \nmedic al\n \nimag e\n \nprocessing\n \npipeline\n \nfor\n \ndisease\n \ndiagnosis,\n \nusing\n \nOpenCV\n \nfor\n \npreprocessing\n \nand\n \nGaussian\n \nfilters\n \nfor\n \nimag e\n \nenhancemen t.\n \nFeature\n \nextraction\n \ninvolved\n \nGLCM\n \nfor\n \ntexture,\n \ncontour\n \nanaly sis\n \nfor\n \nshape,\n \nand\n \ncolor\n \nhistograms\n \nfor\n \ncolor\n \nfeatures,\n \nall\n \nvisualiz ed\n \nwith\n \nmatplotlib\n \nand\n \nskimag e\n.\n \nA\n \nRandomF orestClassifier\n \ntrained\n \non\n \nthese\n \nfeatures\n \nachie ved\n \nhigh\n \nclassific ation\n \naccur acy,\n \nevalua ted\n \nvia\n \na\n \nsplit -test\n \nappr oach.\n \nThe\n \npipeline,\n \nbuilt\n \nin\n \nPython\n,\n \nutiliz ed\n \nsklearn\n \nfor\n \nmachine\n \nlearning\n \nand\n \njoblib\n \nfor\n \nmodel\n \nserializ ation,\n \nenhancing\n \ndiagnos tic\n \naccur acy\n \nand\n \nefficiency\n \nin\n \nmedic al\n \nimaging.\n \nAnuy og\n \nSoftw ares\n \nand\n \nSolutions\n \n \n \n           \nMar ch\n \n2025\n \n\u2013\n \nPresen t\n  \n \nMachine\n \nLearning\n \nIntern\n \nRemot e\n \n\u2022\n Applying machine learning algorithms to classif y tree species based on leaf imag e analy sis. Utilizing Python libraries OpenCV , Scikit -learn, \nTensorFlo w\n \nfor\n \nimag e\n \npreprocessing\n \nand\n \nfeature\n \nextraction.\n \nImplemen ting\n \nand\n \nassessing\n \nthe\n \nperformance\n \nof\n \nmultiple\n \nML\n \nmodels\n,\n \nincluding\n \nKNN\n,\n \nSVM\n,\n \nand\n \nCNN\n.\n \nCurr ently\n \nachie ving\n \na\n \nhigh\n \naccur acy\n \nof\n \n8.678\n \nin\n \nimag e\n \nclassific ation\n \ntasks.\n \nOptionally\n \ncontributing\n \nto\n \nthe\n \ndevelopmen t\n \nof\n \na\n \nFlask\n \nweb\n \ninterface\n \nfor\n \nuser\n \ninteraction. \nProjects \n \n   \nFull\n \nStack\n \nAI\n \nReport\n \nGener ating\n \nAgent\n \n-\n \nFlask,\n \nPandas,\n \nPyTesser act,\n \nOpenAI,\n \nPyPDF2,\n \nMatplotlib,\n \nReportLab\n               \n \n Sour ce Code \n\u2022\n \nDeveloped\n \nan\n \nAI-po wered\n \nFlask\n \napplic ation\n \nautoma tes\n \ncompr ehensiv e\n \nreport\n \ngener ation\n \nacross\n \ndiverse\n \ndomains\n \n(financial,\n \nstock,\n \nresear ch,\n \netc.).\n \nIt\n \nhandles\n \nfile\n \nuploads,\n \nextracts\n \ntext\n \n(OCR\n \nand\n \nPDF),\n \nand\n \nprocesses\n \ndata\n \nfor\n \ninsigh tful\n \nvisualiz ations.\n \nLeveraging\n \nOpenAI\n \nand\n \na\n \ncustom\n \nLlama\n \nInde x\n,\n \nit\n \nperforms\n \nintelligent\n \ntext\n \nanaly sis\n \nand\n \ninforma tion\n \nretrieval.\n \nFinally ,\n \nit\n \ncompiles\n \nstructur ed\n \nPDF\n \nreports\n \nwith\n \nAI-driv en\n \nRetrieval-Augmen ted\n \nGener ation\n \ncontent\n \nand\n \ndata\n \nvisualiz ations,\n \nstreamlining\n \nthe\n \nreporting\n \nprocess.\n  \n    \n  \nIntellig ent\n \nBook\n \nRecommenda tion\n \nSystem\n \nwith\n \nEmotion\n \nbased\n \nMatching\n \n-\n \nNLP,\n \nTransformer s,\n \nKeyBER T\n \n \n \n \n  Sour ce Code \n\u2022\n \nDeveloped\n \nan\n \nintelligent\n \nbook\n \nrecommenda tion\n \nsystem\n \nleveraging\n \nNatural\n \nLanguag e\n \nProcessing\n \n(NLP)\n \nand\n \nadvanced\n \nsimilarity\n \nmetrics.\n \nAnaly zes\n \nthe\n \nemotional\n \ntone\n \nof\n \nuser -read\n \nbook s\n \nusing\n \nTransformer\n \nmodels\n \nand\n \niden tifies\n \nnew\n \nbook s\n \nwith\n \nsimilar\n \nemotional\n \nprofiles\n.\n \nEmplo ys\n \nKeyBER T\n \nfor\n \nkeyword\n \nand\n \ncontent\n \nrelevance\n \nscoring\n \nacross\n \ndiverse\n \ncategories:\n \nself-help,\n \npsychology ,\n \nphilosoph y,\n \nand\n \npersonal\n \ndevelopmen t.\n \nImplemen ts\n \na\n \nsmart\n \nfallback\n \nmechanism\n \nto\n \nrecommend\n \nbook s\n \nby\n \nthe\n \nsame\n \nauthor\n \nwhen\n \nstrong\n \nmatches\n \nare\n \nunavailable,\n \nenhancing\n \npersonaliz ation.\n \nPotentially\n \nbuilding\n \na\n \nuser -friendly\n \nweb\n \ninterface\n \nusing\n \nFlask\n \nto\n \nprovide\n \ninteractiv e\n \nbook\n \nrecommenda tions.\n  \nPersonaliz ed\n \nInvestmen t\n \nPortfolio\n \nAdvisor -\n \nFlask,\n \nyfinance,\n \nNumP y,\n \nPandas,\n \nMatplotlib,\n \nSeaborn,\n \nsklearn,\n \nGroq\n \n    Sour ce Code \n\u2022\n \nImplemen ted\n  \u201cEnhanced Portfolio Analy sis,\u201d a web applic ation for optimizing investmen t portf olios using real-time stock data from yfinance \nand\n \nstatistical\n \nmodels.\n \nThis\n \napplic ation\n \nprocesses\n \ndata\n \nwith\n \nNumP y\n \nand\n \nPandas\n,\n \napplies\n \nstatistical\n \nanaly ses\n \nwith\n \nscipy,\n \nand\n \nscales\n \ninputs\n \nusing\n \nsklearn\u2019 s\n \nMinMa xScaler\n.\n \nIt\n \nfeatures\n \nGroq\u2019s\n \nLLM\n \nfor\n \nadvanced\n \nportf olio\n \nanaly sis,\n \nproviding\n \nrisk\n \nassessmen ts\n \nand\n \ninvestmen t\n \nrecommenda tions\n \ntailor ed\n \nto\n \nuser -defined\n \nparame ters.\n \nVisualiz ations\n \nare\n \ngener ated\n \nusing\n \nMatplotlib\n \nand\n \nSeaborn\n,\n \naiding\n \nin\n \nthe\n \ninterpr etation\n \nof\n \ncomple x\n \ndata\n \nthrough\n \ngraphic al\n \nrepresen tations.\n \nBuilt\n \non\n \nthe\n \nFlask\n \nframe work\n,\n \nit\n \noffers\n \na\n \nsecur e,\n \nscalable,\n \nand\n \nuser -friendly\n \ninterface\n \nfor\n \ninteractiv e\n \nfinancial\n \nanaly sis\n \nand\n \ndecision-making\n \nsupport.\n \n \nTechnic al Skills \nCour sework: Data Structur es Algorithms , Oper ating Systems, Database Storage Systems, Data Science, Machine Learning , Gener ative AI  Languag es: Python, C , R, CUD A (GPU Programming)            Data Analy sis: Pandas, NumP y, Matplotlib, Seaborn Developer Tools: VS Code, Pycharm, Jupyter Notebook, Google Colab, GitHub  Soft Skills: Communic ation, Problem Solving , Proactiv e Attitude, Critic al Thinking , \nLeader ship,\n \nTime\n \nManag emen t,\n \nCreativity ,\n \nAdap tability\n \nActivities and Extracurricular \n\u2022\n \nE-cell\n \n-\n \nCore\n \nTeam\n \nMember\n \n-\n \nOfficial\n \nEntrepreneurship\n \nClub\n \nin\n \nCollege\n \nMember\n in Upstarters at the Entrepreneur ship Cell, responsible for \noverseeing\n \nthe\n \nincuba tion\n \nof\n \nstartup s\n \nand\n \npromoting\n \nentrepreneurial\n \ngrowth\n \nthrough\n \nmen torship\n \nand\n \nresour ce\n \nalloc ation.\n \n\u2022\n \nIEEE -\n \nCore\n \nTeam\n \nMember\n \n-\n \nOfficial\n \nTechnic al\n \nProf essional\n \nOrganiz ation\u2019 s\n \nClub\n \nin\n \nCollege\n \nMember\n \nin\n CIS, responsible for driving initia tives \nin\n \ncomput ational\n \nintelligence,\n \noverseeing\n \nprojects,\n \nand\n \nenhancing\n \nmember\n \nengagemen t\n \nthrough\n \nworkshop s\n \nand\n \nseminar s.\n \n\n \n",
     "file_path": "data/uploads/20250531_184929_Pranamya Jain.pdf"
+  },
+  {
+    "id": "20250531_235122",
+    "filename": "20250531_235122_1MS22AD035_Provisional_Grade_Card.pdf",
+    "uploaded_at": "2025-05-31T23:51:22.937891",
+    "name": "Name not found",
+    "email": "Email not found",
+    "phone": "Phone not found",
+    "location": " RAMAIAH INSTITUTE OF TECHNOLOGY, \n",
+    "skills": [
+      "R",
+      "Machine Learning"
+    ],
+    "experience": [],
+    "education": [
+      {
+        "degree": "M.S.",
+        "institution": "INSTITUTE",
+        "year": "Not specified"
+      },
+      {
+        "degree": "M.S.",
+        "institution": "INSTITUTE",
+        "year": "Not specified"
+      },
+      {
+        "degree": "M.S.",
+        "institution": "INSTITUTE",
+        "year": "Not specified"
+      },
+      {
+        "degree": "ma",
+        "institution": "INSTITUTE",
+        "year": "Not specified"
+      }
+    ],
+    "experience_years": 0,
+    "summary": "M.S. RAMAIAH INSTITUTE OF TECHNOLOGY, \n(AUTONOMOUS INSTITUTE AFFILIATED TO VTU) BANGALORE - 560 054\nProvisional Grade Card ODD Feb 2025 Examination\nUSN :1MS22AD035\nNAME :N CHINMAYA Father's / Mother's",
+    "raw_text": "M.S. RAMAIAH INSTITUTE OF TECHNOLOGY, \n(AUTONOMOUS INSTITUTE AFFILIATED TO VTU) BANGALORE - 560 054\nProvisional Grade Card ODD Feb 2025 Examination\nUSN :1MS22AD035\nNAME :N CHINMAYA Father's / Mother's Name :N LAL\nBranch: :ARTIFICIAL INTELLIGENCE AND DATA SCIENCE Program: :B.E\nS.No Course Code Course Name Credits Grade GPA\n1 AD51(R) DATA MINING AND MACHINE LEARNING 3 O 10\n2 AD52 OPERATING SYSTEMS 3 O 10\n3 AD53(R) DATA STORAGE TECHNIQUES 3 O 10\n4 AD54(R) FUNDAMENTALS OF DATA SCIENCE 4 A+ 9\n5 ADAEC59 DATA VISUALIZATION USING POWER BI 1 O 10\n6 ADE553 COMPUTER ORGANIZATION AND ARCHITECTURE 3 O 10\n7 ADL56 MACHINE LEARNING LABORATORY 1 O 10\n8 ADL57(R) PARALLEL PROGRAMMING LABORATORY 1 O 10\n9 AL58 RESEARCH METHODOLOGY & INTELLECTUAL PROPERTY RIGHTS 3 A+ 9\n10 HS510 ENVIRONMENTAL STUDIES 0 Pass 0\nTotal 22\nSGPA 9.68\nDate: Apr 26, 2025\nNote: The results published on this web site are provisional and are provided for immediate information to the examinees. These results may not be used as official confirmation of your achievement.\n  While all efforts have been made to make the information available on this website as authentic as possible, M.S. RAMAIAH INSTITUTE OF TECHNOLOGY or any of their staff will not be \nresponsible for any loss caused by shortcoming, defect or inaccuracy in the information provided on this website. Please contact the Examination Department for the final official results.\n\"Outcome Based Education\" software by contineo.in\n",
+    "file_path": "data/uploads/20250531_235122_1MS22AD035_Provisional_Grade_Card.pdf"
+  },
+  {
+    "id": "20250531_235230",
+    "filename": "20250531_235230_RESUME (N CHINMAYA).pdf",
+    "uploaded_at": "2025-05-31T23:52:30.572730",
+    "name": "Education",
+    "email": "chinmayanarmdeshwar@gmail.com",
+    "phone": "+91 789 2835007",
+    "location": " Data Science   Bengaluru, IN",
+    "skills": [
+      "R",
+      "React",
+      "Github",
+      "Flask",
+      "Go",
+      "Git",
+      "Machine Learning",
+      "Java",
+      "Python",
+      "Mongodb",
+      "C++"
+    ],
+    "experience": [
+      {
+        "title": "Web Development",
+        "company": "Chhetri",
+        "description": "Details extracted from resume"
+      },
+      {
+        "title": "Playing Football",
+        "company": "C",
+        "description": "Details extracted from resume"
+      }
+    ],
+    "education": [
+      {
+        "degree": "ma",
+        "institution": "EDUCATION  \nRamaiah Institute",
+        "year": "Not specified"
+      }
+    ],
+    "experience_years": 0,
+    "summary": "Chinmaya Narmdeshwar  (N Chinmaya)  \nBengaluru, Karnataka | chinmayanarmdeshwar@gmail.com | +91 789 2835007 | LinkedIn  | GitHub  \nEDUCATION  \nRamaiah Institute of Technology  | B.E. Artificial Intell",
+    "raw_text": "Chinmaya Narmdeshwar  (N Chinmaya)  \nBengaluru, Karnataka | chinmayanarmdeshwar@gmail.com | +91 789 2835007 | LinkedIn  | GitHub  \nEDUCATION  \nRamaiah Institute of Technology  | B.E. Artificial Intelligence & Data Science   Bengaluru, IN | 12/2022 - Present  \n\u2022 Cumulative GPA : 9.80 (Till Semester 4) \nKendriya Vidyalaya Bailey Road  | Senior School Certificate Examination, CBSE          Patna, IN | 09/2020 - 06/2022  \n\u2022 Percentage : 93.6 (Science with Mathematics)  \nKendriya  Vidyalaya Bailey Road | Secondary School Examination, CBSE          Patna,  IN | 10/2019  - 06/2020  \n\u2022 Percentage : 92.6   \nSKILLS   \n\u2022 Languages : C, C++, Java, Python, R  \n\u2022 Developer Tools : Visual Studio, Visual Studio Code, Git & GitHub  \n\u2022 Soft Skills : Problem Solving, Communication Skill, Teamwork , Leadership, Adaptability  \n\u2022 Coursework : Data Structures & Algorithms in C, Computational Theory, DBMS, Operating Systems  \n\u2022 Communication: English (Proficient), Hindi (Fluent), Kannada (Basic)  \nPROJECTS  \n\u2022 AI Report Generating Agent                                                      2024  \n~  Developed an AI -powered report -generating agent leveraging Llama and full -stack development.  \n\u2212 Tools & Technologies Used: Python, Llama, React.js, Flask, MongoDB  \n\u2212 Developed an AI -powered report -generating agent using Python, Llama, React.js, Flask, and MongoDB. This application dynamically generates reports from struc tured and \nunstructured data based on natural language queries, integrating with various APIs and data bases.  It efficiently processes large datasets and exports customizable reports \nin formats like PDF, complete with rich visualizations. This project highlights my proficiency in AI/ML and web development, as well as my ability to deliver comprehensive, \ndata-driven solutions . \n\u2212 Qualified to the Semi -Finals of the 100x Engineers Buildathon 2024  \n\u2022 NoteRIT Branch Portal Development                2024  \n~  Collaborated on creating NoteRIT , a centrali sed study  platform for the AI & Data Science and AI & Machine Learning departments . \n\u2212 Tools & Technologies : React.js, Vercel, Google Drive  \n\u2212 I compiled and organi sed academic resources into a structured Google Drive repository, ensuring easy access and management. These \nresources were then seamlessly integrated into the website, providing users with a central ised location for all departmental materials. \nAdditionally, I assisted in designing an intuitive user interface to enhance user experience and deployed the application usi ng Vercel for \noptimal performance and accessibility.  \nINTERESTS  \n\u2022 Technical : DSA, Web Development, Artificial Intelligence, Machine Learning, Data Science  \n\u2022 Football Enthusiast : Indian Football, Bengaluru FC, Sunil Chhetri  \n\u2022 Playing Football : Holding Midfielder  \n\u2022 Position : Core Member of  the North End Blues, Official Fanclub of Bengaluru FC  \n",
+    "file_path": "data/uploads/20250531_235230_RESUME (N CHINMAYA).pdf"
   }
 ]
