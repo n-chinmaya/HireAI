@@ -4,190 +4,607 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candidate Details - HireAI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <style>
+        /* Page-specific styles for candidate_detail.html */
         .candidate-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 0;
+            background: linear-gradient(135deg, #333333 0%, #111111 50%, #000000 100%);
+            padding: 4rem 0 6rem 0;
+            border-bottom: 1px solid var(--border-primary);
+            position: relative;
         }
+        
         .profile-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-top: -50px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            box-shadow: var(--shadow-card);
+            margin-top: -3rem;
             position: relative;
             z-index: 10;
+            padding: 2rem;
+            transition: var(--transition-smooth);
         }
+        
+        .profile-card:hover {
+            box-shadow: var(--shadow-elevated);
+        }
+        
         .skill-badge {
-            background: #e3f2fd;
-            color: #1976d2;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-primary);
             padding: 0.4rem 0.8rem;
             border-radius: 20px;
-            margin: 0.2rem;
+            margin: 0.25rem;
             display: inline-block;
             font-size: 0.9rem;
+            transition: var(--transition-fast);
         }
+        
+        .skill-badge:hover {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+            transform: translateY(-1px);
+        }
+        
         .match-score-big {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
+            background: linear-gradient(45deg, #51cf66, #40c057);
+            color: var(--bg-primary);
             border-radius: 50%;
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 1.8rem;
+            font-weight: 700;
             margin: 0 auto;
+            box-shadow: var(--shadow-elevated);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .match-score-big::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 3s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         .action-btn {
             border-radius: 25px;
             padding: 0.8rem 2rem;
             font-weight: 600;
-            margin: 0.5rem;
+            margin: 0.5rem 0;
+            width: 100%;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+        
+        .action-btn:hover::before {
+            left: 100%;
+        }
+        
+        .candidate-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            align-items: start;
+        }
+        
+        .section-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .card-header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-primary);
+            padding: 1rem;
+            border-radius: 7px 7px 0 0;
+        }
+        
+        .card-header h4, .card-header h5 {
+            margin: 0;
+            color: var(--text-primary);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .alert {
+            border-radius: 6px;
+            border: 1px solid;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-info {
+            background: var(--bg-secondary);
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+        
+        .alert-success {
+            background: rgba(81, 207, 102, 0.1);
+            border-color: #51cf66;
+            color: #51cf66;
+        }
+        
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: #ffc107;
+            color: #ffc107;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--border-primary);
+        }
+        
+        .btn-close {
+            filter: invert(1);
+        }
+        
+        .badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .bg-secondary {
+            background: var(--bg-secondary) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-primary);
+        }
+        
+        .bg-info {
+            background: #51cf66 !important;
+            color: var(--bg-primary) !important;
+        }
+        
+        .candidate-title {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .candidate-name {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #51cf66 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .match-score-label {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .profile-summary {
+            margin-bottom: 2rem;
+        }
+        
+        .experience-info {
+            margin-bottom: 1.5rem;
+        }
+        
+        .experience-info p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .actions-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+        
+        .user-timestamp-info {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .datetime-display {
+            font-family: 'Inter', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .breadcrumb-nav {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .breadcrumb-nav a {
+            color: var(--accent-green);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .breadcrumb-nav a:hover {
+            color: #40c057;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .candidate-info-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .section-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .candidate-name {
+                font-size: 2.5rem;
+            }
+            
+            .candidate-header {
+                padding: 3rem 0 4rem 0;
+            }
+            
+            .match-score-big {
+                width: 100px;
+                height: 100px;
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-brain me-2"></i>HireAI
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/upload">Upload Resume</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/search">Search Candidates</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/analytics">Analytics</a>
-                    </li>
+    <div class="main-wrapper">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="/" class="navbar-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </a>
+                <ul class="navbar-nav">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/upload" class="nav-link">Upload Resume</a></li>
+                    <li><a href="/search" class="nav-link">Search Candidates</a></li>
+                    <li><a href="/analytics" class="nav-link">Analytics</a></li>
                 </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Candidate Header -->
-    <div class="candidate-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <h1 id="candidateName">Loading...</h1>
-                    <p class="lead" id="candidateTitle">Loading...</p>
+                <!-- User Info in Navbar -->
+                <div class="navbar-text">
+                    <i class="fas fa-user-circle icon"></i>
+                    <span id="currentUser">pranamya-jain</span>
                 </div>
-                <div class="col-md-4 text-end">
-                    <div class="match-score-big" id="matchScore">
-                        --
+            </div>
+        </nav>
+
+        <div class="main-container">
+            <!-- Breadcrumb Navigation -->
+            <nav class="breadcrumb-nav animate-fadeInUp">
+                <div class="flex-start" style="gap: 0.5rem; align-items: center;">
+                    <a href="/"><i class="fas fa-home icon"></i> Home</a>
+                    <i class="fas fa-chevron-right text-muted"></i>
+                    <a href="/search"><i class="fas fa-search icon"></i> Search Candidates</a>
+                    <i class="fas fa-chevron-right text-muted"></i>
+                    <span class="text-muted">Candidate Profile</span>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Candidate Header with Flexbox Centering -->
+        <div class="candidate-header">
+            <div class="main-container">
+                <div class="candidate-info-grid">
+                    <div class="animate-fadeInLeft">
+                        <h1 class="candidate-name" id="candidateName">Loading...</h1>
+                        <p class="candidate-title" id="candidateTitle">Loading...</p>
+                        
+                        <!-- Live datetime and user info -->
+                        <div class="datetime-display">
+                            <i class="fas fa-clock icon"></i>
+                            <span id="currentDateTime">2025-05-31 23:37:23</span> IST
+                        </div>
+                        
+                        <div class="user-timestamp-info">
+                            <div class="grid grid-2">
+                                <div>
+                                    <small class="text-light" style="opacity: 0.75;">Profile Viewed By:</small><br>
+                                    <strong><i class="fas fa-user icon"></i><span id="viewerName">pranamya-jain</span></strong>
+                                </div>
+                                <div>
+                                    <small class="text-light" style="opacity: 0.75;">Team:</small><br>
+                                    <strong><i class="fas fa-seedling icon"></i> Team Seeds! 🌱</strong>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="mt-2">Match Score</p>
+                    
+                    <div class="centered-content animate-fadeInUp">
+                        <div class="match-score-big" id="matchScore">--</div>
+                        <p class="match-score-label">Match Score</p>
+                        <small class="text-light" style="opacity: 0.8;">
+                            <i class="fas fa-sync-alt icon"></i> Updated: <span id="scoreUpdated">Now</span>
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="container">
-        <!-- Profile Card -->
-        <div class="profile-card p-4 mb-4">
-            <div class="row">
-                <div class="col-md-8">
-                    <h3><i class="fas fa-user me-2"></i>Profile Summary</h3>
-                    <p id="candidateSummary" class="text-muted">Loading...</p>
+        <div class="main-container">
+            <!-- Profile Card with Enhanced Layout -->
+            <div class="profile-card animate-fadeInUp">
+                <div class="candidate-info-grid">
+                    <div>
+                        <div class="profile-summary">
+                            <h3><i class="fas fa-user icon"></i> Profile Summary</h3>
+                            <p id="candidateSummary" class="text-secondary">Loading...</p>
+                        </div>
+                        
+                        <div class="experience-info">
+                            <h4><i class="fas fa-briefcase icon"></i> Professional Experience</h4>
+                            <p><strong><span id="experienceYears">--</span> years</strong> of professional experience</p>
+                            <p><i class="fas fa-map-marker-alt icon"></i><span id="candidateLocation">Loading...</span></p>
+                            <p><i class="fas fa-envelope icon"></i><span id="candidateEmail">Loading...</span></p>
+                            <p><i class="fas fa-phone icon"></i><span id="candidatePhone">Loading...</span></p>
+                        </div>
+                    </div>
                     
-                    <h4 class="mt-4"><i class="fas fa-briefcase me-2"></i>Experience</h4>
-                    <p><strong><span id="experienceYears">--</span> years</strong> of professional experience</p>
-                    <p><i class="fas fa-map-marker-alt me-2"></i><span id="candidateLocation">Loading...</span></p>
-                </div>
-                <div class="col-md-4">
-                    <div class="text-center">
+                    <div class="actions-panel">
                         <button class="btn btn-primary action-btn" onclick="generateQuestions()">
-                            <i class="fas fa-question-circle me-2"></i>Generate Questions
+                            <i class="fas fa-question-circle icon"></i> Generate Interview Questions
                         </button>
                         <button class="btn btn-success action-btn" onclick="downloadResume()">
-                            <i class="fas fa-download me-2"></i>Download Resume
+                            <i class="fas fa-download icon"></i> Download Resume
                         </button>
+                        <button class="btn action-btn" onclick="viewFullProfile()">
+                            <i class="fas fa-id-card icon"></i> View Full Profile
+                        </button>
+                        <a href="/search" class="btn action-btn">
+                            <i class="fas fa-arrow-left icon"></i> Back to Search
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Skills Section -->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card h-100">
+            <!-- Skills and Analysis Section with Flexbox -->
+            <div class="section-cards animate-fadeInUp">
+                <div class="card">
                     <div class="card-header">
-                        <h5><i class="fas fa-code me-2"></i>Technical Skills</h5>
+                        <h4><i class="fas fa-code icon"></i> Technical Skills</h4>
                     </div>
                     <div class="card-body">
-                        <div id="skillsList">Loading...</div>
+                        <div id="skillsList">
+                            <div class="loading-shimmer" style="height: 60px; border-radius: 30px;"></div>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-magic icon"></i> Skills extracted using AI parsing
+                            </small>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Match Analysis -->
-            <div class="col-md-6">
-                <div class="card h-100">
+                
+                <div class="card">
                     <div class="card-header">
-                        <h5><i class="fas fa-chart-line me-2"></i>Match Analysis</h5>
+                        <h4><i class="fas fa-chart-line icon"></i> Match Analysis</h4>
                     </div>
                     <div class="card-body">
                         <div id="matchAnalysis">
                             <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Perform a search first to see match analysis
+                                <i class="fas fa-info-circle icon"></i>
+                                Perform a search first to see detailed match analysis
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Screening Questions Modal -->
-        <div class="modal fade" id="questionsModal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="fas fa-question-circle me-2"></i>Screening Questions
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <!-- Additional Info Section -->
+            <div class="section-cards animate-fadeInUp">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-graduation-cap icon"></i> Education & Certifications</h4>
                     </div>
-                    <div class="modal-body">
-                        <div id="questionsList">
-                            <!-- Questions will be loaded here -->
+                    <div class="card-body" id="educationInfo">
+                        <p class="text-muted">Education information will be displayed here when available.</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-history icon"></i> Career Highlights</h4>
+                    </div>
+                    <div class="card-body" id="careerHighlights">
+                        <p class="text-muted">Career highlights will be extracted from the resume.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Viewing History -->
+            <div class="text-center mt-4 p-4 animate-fadeInUp">
+                <div class="alert alert-light">
+                    <h5 class="mb-3"><i class="fas fa-eye icon"></i> Profile Activity</h5>
+                    <div class="grid grid-3" style="gap: 1rem;">
+                        <div>
+                            <strong>Viewed by:</strong><br>
+                            <span class="text-success">pranamya-jain (Team Seeds! 🌱)</span>
+                        </div>
+                        <div>
+                            <strong>View timestamp:</strong><br>
+                            <span id="viewTimestamp">2025-05-31 23:37:23 IST</span>
+                        </div>
+                        <div>
+                            <strong>Profile status:</strong><br>
+                            <span class="text-success">Active & Verified</span>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="exportQuestions()">
-                            <i class="fas fa-download me-2"></i>Export Questions
-                        </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </div>
+                <p class="footer-text">
+                    Built with ❤️ by <strong>Team Seeds! 🌱</strong><br>
+                    Intelligent candidate profiling with AI-powered insights
+                </p>
+                <div class="footer-timestamp">
+                    <i class="fas fa-clock icon-only"></i>
+                    <span id="footerDateTime">2025-05-31 23:37:23</span> IST
+                    <span class="text-muted" style="margin-left: 1rem;">
+                        <i class="fas fa-seedling icon-only"></i> Team Seeds
+                    </span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Screening Questions Modal -->
+    <div class="modal fade" id="questionsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fas fa-question-circle icon"></i> AI-Generated Interview Questions
+                    </h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-magic icon"></i>
+                        <strong>Questions generated by Team Seeds! 🌱 AI</strong><br>
+                        <small>Tailored for this candidate based on their skills and experience</small>
                     </div>
+                    <div id="questionsList">
+                        <!-- Questions will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="exportQuestions()">
+                        <i class="fas fa-download icon"></i> Export Questions
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Full Profile Modal -->
+    <div class="modal fade" id="fullProfileModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fas fa-id-card icon"></i> Complete Candidate Profile
+                    </h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="fullProfileContent">
+                        <!-- Full profile will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" onclick="downloadFullProfile()">
+                        <i class="fas fa-file-pdf icon"></i> Download Full Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS for modal functionality -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let currentCandidate = null;
         let currentQuestions = [];
+        let currentUser = 'pranamya-jain';
 
-        // Get candidate ID from URL
+        // Update live datetime to IST (ENHANCED)
+        function updateDateTime() {
+            const now = new Date();
+            // Convert to IST (UTC + 5:30)
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istTime = new Date(now.getTime() + istOffset);
+            const istString = istTime.toISOString().slice(0, 19).replace('T', ' ');
+            
+            document.getElementById('currentDateTime').textContent = istString;
+            document.getElementById('footerDateTime').textContent = istString;
+            document.getElementById('viewTimestamp').textContent = istString + ' IST';
+        }
+
+        // Set user information (ENHANCED)
+        function setUserInfo() {
+            document.getElementById('currentUser').textContent = currentUser;
+            document.getElementById('viewerName').textContent = currentUser;
+        }
+
+        // Get candidate ID from URL (PRESERVED)
         function getCandidateId() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('id');
         }
 
-        // Load candidate details
+        // Load candidate details (PRESERVED)
         async function loadCandidate() {
             const candidateId = getCandidateId();
             if (!candidateId) {
@@ -217,7 +634,7 @@
             }
         }
 
-        // Display candidate information
+        // Display candidate information (PRESERVED + ENHANCED)
         function displayCandidate(candidate) {
             document.getElementById('candidateName').textContent = candidate.name || 'Unknown';
             document.getElementById('candidateTitle').textContent = 
@@ -226,15 +643,20 @@
                 candidate.summary || 'No summary available';
             document.getElementById('experienceYears').textContent = candidate.experience_years || 0;
             document.getElementById('candidateLocation').textContent = candidate.location || 'Not specified';
+            document.getElementById('candidateEmail').textContent = candidate.email || 'Not provided';
+            document.getElementById('candidatePhone').textContent = candidate.phone || 'Not provided';
             
             // Display match score if available
             const matchScore = candidate.match_score || 0;
             document.getElementById('matchScore').textContent = matchScore + '%';
             
-            // Display skills
-            const skillsHtml = candidate.skills.map(skill => 
-                `<span class="skill-badge">${skill}</span>`
-            ).join('');
+            // Update score timestamp
+            document.getElementById('scoreUpdated').textContent = new Date().toLocaleTimeString() + ' IST';
+            
+            // Display skills with enhanced styling
+            const skillsHtml = candidate.skills && candidate.skills.length > 0 
+                ? candidate.skills.map(skill => `<span class="skill-badge">${skill}</span>`).join('')
+                : '<span class="text-muted">No skills detected</span>';
             document.getElementById('skillsList').innerHTML = skillsHtml;
             
             // Display match analysis if available
@@ -244,8 +666,10 @@
                 if (candidate.match_reasons && candidate.match_reasons.length > 0) {
                     analysisHtml += `
                         <div class="alert alert-success">
-                            <h6><i class="fas fa-check-circle me-2"></i>Strengths:</h6>
-                            ${candidate.match_reasons.map(reason => `<li>${reason}</li>`).join('')}
+                            <h5><i class="fas fa-check-circle icon"></i> Key Strengths:</h5>
+                            <ul class="mb-0">
+                                ${candidate.match_reasons.map(reason => `<li>${reason}</li>`).join('')}
+                            </ul>
                         </div>
                     `;
                 }
@@ -253,8 +677,10 @@
                 if (candidate.concerns && candidate.concerns.length > 0) {
                     analysisHtml += `
                         <div class="alert alert-warning">
-                            <h6><i class="fas fa-exclamation-triangle me-2"></i>Areas to Explore:</h6>
-                            ${candidate.concerns.map(concern => `<li>${concern}</li>`).join('')}
+                            <h5><i class="fas fa-exclamation-triangle icon"></i> Areas to Explore:</h5>
+                            <ul class="mb-0">
+                                ${candidate.concerns.map(concern => `<li>${concern}</li>`).join('')}
+                            </ul>
                         </div>
                     `;
                 }
@@ -263,7 +689,7 @@
             }
         }
 
-        // Generate screening questions
+        // Generate screening questions (PRESERVED)
         async function generateQuestions() {
             if (!currentCandidate) return;
             
@@ -296,20 +722,24 @@
             }
         }
 
-        // Display questions in modal
+        // Display questions in modal (PRESERVED + ENHANCED)
         function displayQuestions(questions) {
             const questionsHtml = questions.map((q, index) => `
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h6 class="card-title">Question ${index + 1} 
+                        <h5 class="card-title">
+                            Question ${index + 1} 
                             <span class="badge bg-secondary">${q.type}</span>
                             <span class="badge bg-info">${q.difficulty}</span>
-                        </h6>
+                        </h5>
                         <p class="card-text">${q.question}</p>
                         ${q.expected_keywords ? `
-                            <small class="text-muted">
-                                <strong>Key points to listen for:</strong> ${q.expected_keywords.join(', ')}
-                            </small>
+                            <div class="alert alert-light mt-2">
+                                <small>
+                                    <strong><i class="fas fa-lightbulb icon"></i> Key points to listen for:</strong><br>
+                                    ${q.expected_keywords.join(', ')}
+                                </small>
+                            </div>
                         ` : ''}
                     </div>
                 </div>
@@ -318,36 +748,146 @@
             document.getElementById('questionsList').innerHTML = questionsHtml;
         }
 
-        // Export questions
+        // Export questions (PRESERVED + ENHANCED)
         function exportQuestions() {
             if (currentQuestions.length === 0) return;
             
-            const content = currentQuestions.map((q, index) => 
-                `Question ${index + 1} (${q.type} - ${q.difficulty}):\n${q.question}\n\nKey points: ${q.expected_keywords ? q.expected_keywords.join(', ') : 'None'}\n\n`
-            ).join('---\n\n');
+            const now = new Date();
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istTime = new Date(now.getTime() + istOffset);
+            const timestamp = istTime.toISOString().slice(0, 19).replace('T', ' ');
+            
+            const content = `Interview Questions for ${currentCandidate.name}
+Generated by: ${currentUser} (Team Seeds! 🌱)
+Generated on: ${timestamp} IST
+
+${currentQuestions.map((q, index) => 
+                `Question ${index + 1} (${q.type} - ${q.difficulty}):
+${q.question}
+
+Key points to listen for: ${q.expected_keywords ? q.expected_keywords.join(', ') : 'None'}
+`
+            ).join('\n---\n\n')}
+
+Report generated by HireAI - Team Seeds! 🌱`;
             
             const blob = new Blob([content], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `screening_questions_${currentCandidate.name.replace(/\s+/g, '_')}.txt`;
+            a.download = `interview_questions_${currentCandidate.name.replace(/\s+/g, '_')}_${istTime.toISOString().split('T')[0]}.txt`;
             a.click();
             URL.revokeObjectURL(url);
         }
 
-        // Download resume
+        // Download resume (PRESERVED)
         function downloadResume() {
             if (!currentCandidate || !currentCandidate.filename) {
                 alert('Resume file not available');
                 return;
             }
             
-            // Create download link (you'll need to implement the download endpoint)
+            // Create download link
             window.open(`/api/download_resume/${currentCandidate.id}`, '_blank');
         }
 
-        // Load candidate on page load
-        document.addEventListener('DOMContentLoaded', loadCandidate);
+        // View full profile (ENHANCED)
+        function viewFullProfile() {
+            if (!currentCandidate) return;
+            
+            const fullProfileHtml = `
+                <div class="grid grid-2" style="gap: 2rem;">
+                    <div>
+                        <h4 class="mb-3"><i class="fas fa-user icon"></i> Personal Information</h4>
+                        <p><strong>Full Name:</strong> ${currentCandidate.name || 'Not provided'}</p>
+                        <p><strong>Email:</strong> ${currentCandidate.email || 'Not provided'}</p>
+                        <p><strong>Phone:</strong> ${currentCandidate.phone || 'Not provided'}</p>
+                        <p><strong>Location:</strong> ${currentCandidate.location || 'Not provided'}</p>
+                        <p><strong>Experience:</strong> ${currentCandidate.experience_years || 0} years</p>
+                    </div>
+                    <div>
+                        <h4 class="mb-3"><i class="fas fa-chart-bar icon"></i> Profile Metrics</h4>
+                        <p><strong>Match Score:</strong> ${currentCandidate.match_score || 0}%</p>
+                        <p><strong>Skills Count:</strong> ${currentCandidate.skills ? currentCandidate.skills.length : 0}</p>
+                        <p><strong>Profile Created:</strong> Recently</p>
+                        <p><strong>Last Updated:</strong> ${new Date().toLocaleDateString()}</p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <h4 class="mb-3"><i class="fas fa-file-alt icon"></i> Professional Summary</h4>
+                <p class="text-secondary">${currentCandidate.summary || 'No summary available'}</p>
+                
+                <hr>
+                
+                <h4 class="mb-3"><i class="fas fa-code icon"></i> Technical Skills</h4>
+                <div class="mb-3">
+                    ${currentCandidate.skills && currentCandidate.skills.length > 0 
+                        ? currentCandidate.skills.map(skill => `<span class="skill-badge">${skill}</span>`).join('')
+                        : '<span class="text-muted">No skills detected</span>'
+                    }
+                </div>
+                
+                <hr>
+                
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle icon"></i> Profile Accessed</h6>
+                    <p class="mb-0">
+                        <strong>Viewed by:</strong> ${currentUser} (Team Seeds! 🌱)<br>
+                        <strong>Access time:</strong> ${new Date().toLocaleString()} IST<br>
+                        <strong>Access purpose:</strong> Candidate evaluation and screening
+                    </p>
+                </div>
+            `;
+            
+            document.getElementById('fullProfileContent').innerHTML = fullProfileHtml;
+            new bootstrap.Modal(document.getElementById('fullProfileModal')).show();
+        }
+
+        // Download full profile (ENHANCED)
+        function downloadFullProfile() {
+            if (!currentCandidate) return;
+            
+            // In a real implementation, this would generate a PDF
+            alert('Full profile download feature will be implemented. For now, you can export interview questions.');
+        }
+
+        // Scroll animations (ENHANCED)
+        function addScrollAnimations() {
+            const animateElements = document.querySelectorAll('.animate-fadeInUp, .animate-fadeInLeft');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) translateX(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animateElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transition = 'all 0.6s ease-out';
+                if (el.classList.contains('animate-fadeInUp')) {
+                    el.style.transform = 'translateY(30px)';
+                } else if (el.classList.contains('animate-fadeInLeft')) {
+                    el.style.transform = 'translateX(-30px)';
+                }
+                observer.observe(el);
+            });
+        }
+
+        // Initialize (PRESERVED + ENHANCED)
+        document.addEventListener('DOMContentLoaded', function() {
+            setUserInfo();
+            loadCandidate();
+            updateDateTime();
+            addScrollAnimations();
+            
+            // Update datetime every second
+            setInterval(updateDateTime, 1000);
+        });
     </script>
 </body>
 </html>

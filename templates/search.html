@@ -4,214 +4,388 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Candidates - HireAI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <style>
+        /* Page-specific styles for search.html */
         .search-container {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px;
-            padding: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--shadow-subtle);
+            position: sticky;
+            top: 100px;
         }
+        
         .candidate-card {
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: var(--transition-smooth);
             cursor: pointer;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .candidate-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(81, 207, 102, 0.05), transparent);
+            transition: var(--transition-smooth);
+        }
+        
+        .candidate-card:hover::before {
+            left: 100%;
+        }
+        
         .candidate-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-elevated);
+            border-color: var(--accent-green);
         }
+        
         .match-score {
             font-size: 1.5rem;
-            font-weight: bold;
+            font-weight: 700;
         }
+        
         .skill-tag {
             display: inline-block;
-            background-color: #e3f2fd;
-            color: #1976d2;
-            padding: 4px 8px;
-            margin: 2px;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-primary);
+            padding: 0.25rem 0.75rem;
+            margin: 0.25rem;
             border-radius: 12px;
             font-size: 0.75rem;
+            transition: var(--transition-fast);
         }
+        
         .matched-skill {
-            background-color: #c8e6c9;
-            color: #388e3c;
+            background-color: rgba(81, 207, 102, 0.2);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
         }
-        .score-excellent { color: #4caf50; }
-        .score-good { color: #ff9800; }
-        .score-fair { color: #f44336; }
+        
+        .score-excellent { color: var(--accent-green); }
+        .score-good { color: var(--accent-yellow); }
+        .score-fair { color: var(--accent-red); }
+        
         .job-analysis {
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-            border-radius: 10px;
-            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-subtle);
+        }
+        
+        .search-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid var(--border-primary);
+            border-radius: 50%;
+            border-top-color: var(--accent-green);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        
+        .search-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        
+        .results-header {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-group .btn-check:checked + .btn {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+            border-color: var(--accent-green);
+        }
+        
+        .btn-outline-primary {
+            border-color: var(--border-primary);
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+            border-color: var(--accent-green);
+        }
+        
+        .btn-success {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: var(--bg-primary);
+        }
+        
+        .btn-success:hover {
+            background: #40c057;
+            border-color: #40c057;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--border-primary);
+        }
+        
+        .btn-close {
+            filter: invert(1);
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-warning {
+            background: var(--bg-card);
+            border-color: var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+        
+        @media (max-width: 768px) {
+            .search-layout {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .search-container {
+                position: static;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-brain me-2"></i>HireAI
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/upload">Upload Resume</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/search">Search Candidates</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/analytics">Analytics</a>
-                    </li>
+    <div class="main-wrapper">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="/" class="navbar-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </a>
+                <ul class="navbar-nav">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/upload" class="nav-link">Upload Resume</a></li>
+                    <li><a href="/search" class="nav-link active">Search Candidates</a></li>
+                    <li><a href="/analytics" class="nav-link">Analytics</a></li>
                 </ul>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <div class="container mt-4">
-        <div class="text-center mb-4">
-            <h1 class="fw-bold">
-                <i class="fas fa-search text-primary me-3"></i>Search Candidates
-            </h1>
-            <p class="text-muted">Find the perfect candidates using AI-powered matching</p>
-        </div>
+        <div class="main-container">
+            <!-- Page Header with Flexbox Centering -->
+            <div class="search-header animate-fadeInUp">
+                <h1 class="hero-title">
+                    <i class="fas fa-search icon-large"></i> Search Candidates
+                </h1>
+                <p class="hero-subtitle">Find the perfect candidates using AI-powered matching</p>
+                
+                <!-- Live timestamp -->
+                <div class="footer-timestamp" style="margin-top: 1rem;">
+                    <i class="fas fa-clock icon-only"></i>
+                    <span id="currentDateTime">2025-05-31 23:19:54</span> IST
+                    <span class="text-muted" style="margin-left: 1rem;">
+                        <i class="fas fa-user icon-only"></i> pranamya-jain
+                    </span>
+                </div>
+            </div>
 
-        <div class="row">
-            <!-- Search Form -->
-            <div class="col-lg-4 mb-4">
-                <div class="search-container">
-                    <h5 class="fw-bold mb-4">
-                        <i class="fas fa-sliders-h me-2"></i>Search Criteria
-                    </h5>
-                    
-                    <form id="search-form">
-                        <!-- Job Description -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Job Description *</label>
-                            <textarea id="job-description" class="form-control" rows="6" 
-                                placeholder="Paste the job description here...&#10;&#10;Example:&#10;We are looking for a Senior Python Developer with 5+ years of experience in Django, React, and AWS. The candidate should have strong problem-solving skills and experience with microservices architecture."></textarea>
-                        </div>
-
-                        <!-- Quick Analysis Button -->
-                        <div class="mb-4">
-                            <button type="button" class="btn btn-outline-info btn-sm w-100" id="analyze-job-btn">
-                                <i class="fas fa-magic me-2"></i>Analyze Job Description
-                            </button>
-                        </div>
-
-                        <!-- Filters -->
-                        <h6 class="fw-bold mb-3">Filters</h6>
+            <div class="search-layout">
+                <!-- Search Form -->
+                <div class="animate-fadeInLeft">
+                    <div class="search-container">
+                        <h3 class="mb-4">
+                            <i class="fas fa-sliders-h icon"></i> Search Criteria
+                        </h3>
                         
-                        <div class="mb-3">
-                            <label class="form-label">Minimum Experience (years)</label>
-                            <select id="min-experience" class="form-select">
-                                <option value="">Any</option>
-                                <option value="0">Entry Level (0-1)</option>
-                                <option value="2">2+ years</option>
-                                <option value="3">3+ years</option>
-                                <option value="5">5+ years</option>
-                                <option value="7">7+ years</option>
-                                <option value="10">10+ years</option>
-                            </select>
-                        </div>
+                        <form id="search-form">
+                            <!-- Job Description -->
+                            <div class="form-group">
+                                <label class="form-label">Job Description *</label>
+                                <textarea id="job-description" class="form-input form-textarea" rows="6" 
+                                    placeholder="Paste the job description here...&#10;&#10;Example:&#10;We are looking for a Senior Python Developer with 5+ years of experience in Django, React, and AWS. The candidate should have strong problem-solving skills and experience with microservices architecture."></textarea>
+                            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Required Skills</label>
-                            <input type="text" id="required-skills" class="form-control" 
-                                placeholder="e.g. Python, React, AWS (comma separated)">
-                            <small class="text-muted">Candidates must have at least one of these skills</small>
-                        </div>
+                            <!-- Quick Analysis Button -->
+                            <div class="form-group">
+                                <button type="button" class="btn" id="analyze-job-btn" style="width: 100%;">
+                                    <i class="fas fa-magic icon"></i> Analyze Job Description
+                                </button>
+                            </div>
 
-                        <div class="mb-4">
-                            <label class="form-label">Location</label>
-                            <input type="text" id="location-filter" class="form-control" 
-                                placeholder="e.g. San Francisco, Remote">
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-search me-2"></i>Search Candidates
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Job Analysis Results -->
-                <div id="job-analysis-card" class="mt-4" style="display: none;">
-                    <div class="job-analysis">
-                        <h6 class="fw-bold mb-3">
-                            <i class="fas fa-lightbulb me-2"></i>Job Analysis
-                        </h6>
-                        <div id="job-analysis-content">
-                            <!-- Analysis will be populated here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Results -->
-            <div class="col-lg-8">
-                <!-- Loading State -->
-                <div id="loading-state" class="text-center" style="display: none;">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-3 text-muted">Searching candidates...</p>
-                </div>
-
-                <!-- No Results State -->
-                <div id="no-results" class="text-center" style="display: none;">
-                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">No candidates found</h5>
-                    <p class="text-muted">Try adjusting your search criteria or upload more resumes.</p>
-                    <a href="/upload" class="btn btn-primary">
-                        <i class="fas fa-upload me-2"></i>Upload Resumes
-                    </a>
-                </div>
-
-                <!-- Empty State -->
-                <div id="empty-state" class="text-center">
-                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">Ready to Search</h5>
-                    <p class="text-muted">Enter a job description to find matching candidates from your database.</p>
-                </div>
-
-                <!-- Results Header -->
-                <div id="results-header" style="display: none;">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="mb-0">
-                            <span id="results-count">0</span> Candidates Found
-                        </h5>
-                        <div class="btn-group" role="group">
-                            <input type="radio" class="btn-check" name="sort-options" id="sort-score" checked>
-                            <label class="btn btn-outline-primary btn-sm" for="sort-score">
-                                <i class="fas fa-star me-1"></i>Best Match
-                            </label>
+                            <!-- Filters -->
+                            <h4 class="mb-3">Filters</h4>
                             
-                            <input type="radio" class="btn-check" name="sort-options" id="sort-experience">
-                            <label class="btn btn-outline-primary btn-sm" for="sort-experience">
-                                <i class="fas fa-calendar me-1"></i>Experience
-                            </label>
+                            <div class="form-group">
+                                <label class="form-label">Minimum Experience (years)</label>
+                                <select id="min-experience" class="form-input">
+                                    <option value="">Any</option>
+                                    <option value="0">Entry Level (0-1)</option>
+                                    <option value="2">2+ years</option>
+                                    <option value="3">3+ years</option>
+                                    <option value="5">5+ years</option>
+                                    <option value="7">7+ years</option>
+                                    <option value="10">10+ years</option>
+                                </select>
+                            </div>
 
-                            <!-- ADD THIS: Export Button -->
-                            <button type="button" class="btn btn-success btn-sm ms-2" onclick="exportResults()">
-                                <i class="fas fa-download me-1"></i>Export
+                            <div class="form-group">
+                                <label class="form-label">Required Skills</label>
+                                <input type="text" id="required-skills" class="form-input" 
+                                    placeholder="e.g. Python, React, AWS (comma separated)">
+                                <small class="text-muted">Candidates must have at least one of these skills</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Location</label>
+                                <input type="text" id="location-filter" class="form-input" 
+                                    placeholder="e.g. San Francisco, Remote">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">
+                                <i class="fas fa-search icon"></i> Search Candidates
                             </button>
+                        </form>
+                    </div>
+
+                    <!-- Job Analysis Results -->
+                    <div id="job-analysis-card" class="mt-4" style="display: none;">
+                        <div class="job-analysis">
+                            <h4 class="mb-3">
+                                <i class="fas fa-lightbulb icon"></i> Job Analysis
+                            </h4>
+                            <div id="job-analysis-content">
+                                <!-- Analysis will be populated here -->
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Results List -->
-                <div id="results-list">
-                    <!-- Candidate cards will be populated here -->
+                <!-- Results -->
+                <div class="animate-fadeInUp">
+                    <!-- Loading State -->
+                    <div id="loading-state" class="centered-content" style="display: none; min-height: 300px;">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-3 text-secondary">Searching candidates...</p>
+                    </div>
+
+                    <!-- No Results State -->
+                    <div id="no-results" class="centered-content" style="display: none; min-height: 300px;">
+                        <i class="fas fa-search empty-state-icon"></i>
+                        <h3 class="text-secondary mb-3">No candidates found</h3>
+                        <p class="text-secondary mb-4">Try adjusting your search criteria or upload more resumes.</p>
+                        <a href="/upload" class="btn btn-primary">
+                            <i class="fas fa-upload icon"></i> Upload Resumes
+                        </a>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="empty-state" class="centered-content" style="min-height: 400px;">
+                        <i class="fas fa-users empty-state-icon"></i>
+                        <h3 class="text-secondary mb-3">Ready to Search</h3>
+                        <p class="text-secondary">Enter a job description to find matching candidates from your database.</p>
+                    </div>
+
+                    <!-- Results Header -->
+                    <div id="results-header" style="display: none;">
+                        <div class="results-header">
+                            <div class="flex-between mb-3">
+                                <h3 class="mb-0">
+                                    <span id="results-count">0</span> Candidates Found
+                                </h3>
+                                <div class="flex-center" style="gap: 0.5rem;">
+                                    <div class="btn-group" role="group">
+                                        <input type="radio" class="btn-check" name="sort-options" id="sort-score" checked>
+                                        <label class="btn btn-outline-primary btn-small" for="sort-score">
+                                            <i class="fas fa-star icon"></i> Best Match
+                                        </label>
+                                        
+                                        <input type="radio" class="btn-check" name="sort-options" id="sort-experience">
+                                        <label class="btn btn-outline-primary btn-small" for="sort-experience">
+                                            <i class="fas fa-calendar icon"></i> Experience
+                                        </label>
+                                    </div>
+
+                                    <button type="button" class="btn btn-success btn-small" onclick="exportResults()">
+                                        <i class="fas fa-download icon"></i> Export
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results List -->
+                    <div id="results-list">
+                        <!-- Candidate cards will be populated here -->
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </div>
+                <p class="footer-text">
+                    Built with ❤️ by <strong>Team Seeds! 🌱</strong><br>
+                    Intelligent candidate matching powered by AI
+                </p>
+                <div class="footer-timestamp">
+                    <i class="fas fa-clock icon-only"></i>
+                    <span id="footerDateTime">2025-05-31 23:19:54</span> IST
+                    <span class="text-muted" style="margin-left: 1rem;">
+                        <i class="fas fa-seedling icon-only"></i> Team Seeds
+                    </span>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <!-- Candidate Detail Modal -->
@@ -219,7 +393,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modal-candidate-name">Candidate Details</h5>
+                    <h3 class="modal-title" id="modal-candidate-name">Candidate Details</h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -228,19 +402,20 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary">
-                        <i class="fas fa-envelope me-2"></i>Contact Candidate
+                        <i class="fas fa-envelope icon"></i> Contact Candidate
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Bootstrap JS for modal functionality -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let currentCandidates = [];
-        let searchResults = []; // ADD THIS: for export compatibility
+        let searchResults = []; // for export compatibility
         let currentJobDescription = '';
 
         const searchForm = document.getElementById('search-form');
@@ -253,13 +428,24 @@
         const resultsList = document.getElementById('results-list');
         const resultsCount = document.getElementById('results-count');
 
-        // Search form submission
+        // Update live datetime to IST (ENHANCED)
+        function updateDateTime() {
+            const now = new Date();
+            // Convert to IST (UTC + 5:30)
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istTime = new Date(now.getTime() + istOffset);
+            const istString = istTime.toISOString().slice(0, 19).replace('T', ' ');
+            document.getElementById('currentDateTime').textContent = istString;
+            document.getElementById('footerDateTime').textContent = istString;
+        }
+
+        // Search form submission (PRESERVED)
         searchForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             await searchCandidates();
         });
 
-        // Job analysis
+        // Job analysis (PRESERVED)
         analyzeJobBtn.addEventListener('click', async () => {
             const jobDescription = jobDescriptionInput.value.trim();
             if (!jobDescription) {
@@ -269,7 +455,7 @@
             await analyzeJobDescription(jobDescription);
         });
 
-        // Sort options
+        // Sort options (PRESERVED)
         document.getElementById('sort-score').addEventListener('change', () => {
             if (currentCandidates.length > 0) {
                 sortAndDisplayCandidates('score');
@@ -316,7 +502,7 @@
 
                 if (data.success) {
                     currentCandidates = data.candidates;
-                    searchResults = data.candidates; // FIX: Sync both variables
+                    searchResults = data.candidates; // Sync both variables
                     displayResults(data.candidates);
                     
                     if (!data.ai_enabled) {
@@ -334,7 +520,7 @@
 
         async function analyzeJobDescription(jobDescription) {
             analyzeJobBtn.disabled = true;
-            analyzeJobBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analyzing...';
+            analyzeJobBtn.innerHTML = '<span class="loading-spinner" style="width: 1rem; height: 1rem; border-width: 2px;"></span> Analyzing...';
 
             try {
                 const response = await fetch('/api/analyze_job', {
@@ -359,7 +545,7 @@
                 alert('Job analysis failed: ' + error.message);
             } finally {
                 analyzeJobBtn.disabled = false;
-                analyzeJobBtn.innerHTML = '<i class="fas fa-magic me-2"></i>Analyze Job Description';
+                analyzeJobBtn.innerHTML = '<i class="fas fa-magic icon"></i> Analyze Job Description';
             }
         }
 
@@ -403,7 +589,7 @@
             emptyState.style.display = 'none';
             noResults.style.display = 'none';
             resultsHeader.style.display = 'none';
-            loadingState.style.display = 'block';
+            loadingState.style.display = 'flex';
         }
 
         function hideLoading() {
@@ -415,7 +601,7 @@
 
             if (candidates.length === 0) {
                 emptyState.style.display = 'none';
-                noResults.style.display = 'block';
+                noResults.style.display = 'flex';
                 resultsHeader.style.display = 'none';
                 return;
             }
@@ -462,32 +648,34 @@
             let reasonsHtml = '';
             if (candidate.match_reasons && candidate.match_reasons.length > 0) {
                 reasonsHtml = candidate.match_reasons.slice(0, 2).map(reason => 
-                    `<li class="small text-muted">${reason}</li>`
+                    `<li class="text-muted" style="font-size: 0.875rem;">${reason}</li>`
                 ).join('');
             }
 
             return `
                 <div class="card candidate-card mb-3" onclick="showCandidateDetails('${candidate.id}')">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h5 class="card-title mb-2">
-                                    ${candidate.name || 'Unknown Name'}
-                                    <small class="text-muted">(${candidate.experience_years || 0} years exp.)</small>
-                                </h5>
-                                <p class="text-muted mb-2">
-                                    <i class="fas fa-envelope me-2"></i>${candidate.email || 'No email'}
-                                    <i class="fas fa-map-marker-alt ms-3 me-2"></i>${candidate.location || 'No location'}
-                                </p>
-                                <div class="mb-2">${skillsHtml}</div>
-                                ${reasonsHtml ? `<ul class="mb-0">${reasonsHtml}</ul>` : ''}
+                        <div class="flex-between">
+                            <div class="flex-start" style="flex: 1;">
+                                <div style="flex: 1;">
+                                    <h4 class="mb-2">
+                                        ${candidate.name || 'Unknown Name'}
+                                        <small class="text-muted">(${candidate.experience_years || 0} years exp.)</small>
+                                    </h4>
+                                    <p class="text-secondary mb-2">
+                                        <i class="fas fa-envelope icon"></i> ${candidate.email || 'No email'}
+                                        <i class="fas fa-map-marker-alt icon"></i> ${candidate.location || 'No location'}
+                                    </p>
+                                    <div class="mb-2">${skillsHtml}</div>
+                                    ${reasonsHtml ? `<ul class="mb-0">${reasonsHtml}</ul>` : ''}
+                                </div>
                             </div>
-                            <div class="col-md-4 text-end">
-                                <div class="match-score ${scoreClass}">${matchScore}%</div>
-                                <small class="text-muted">Match Score</small>
+                            <div class="text-center" style="min-width: 120px;">
+                                <div class="match-score ${scoreClass} mb-1">${matchScore}%</div>
+                                <small class="text-muted d-block">Match Score</small>
                                 <div class="mt-2">
                                     <small class="text-muted">
-                                        Skills: ${candidate.skill_match || 0}% | 
+                                        Skills: ${candidate.skill_match || 0}%<br>
                                         Experience: ${candidate.experience_match || 0}%
                                     </small>
                                 </div>
@@ -505,26 +693,25 @@
             document.getElementById('modal-candidate-name').textContent = candidate.name || 'Unknown Name';
             
             let detailsHtml = `
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 class="fw-bold">Contact Information</h6>
+                <div class="grid grid-2">
+                    <div>
+                        <h4 class="mb-3">Contact Information</h4>
                         <p><strong>Email:</strong> ${candidate.email || 'Not provided'}</p>
                         <p><strong>Phone:</strong> ${candidate.phone || 'Not provided'}</p>
                         <p><strong>Location:</strong> ${candidate.location || 'Not provided'}</p>
                         <p><strong>Experience:</strong> ${candidate.experience_years || 0} years</p>
                     </div>
-                    <div class="col-md-6">
-                        <h6 class="fw-bold">Match Analysis</h6>
+                    <div>
+                        <h4 class="mb-3">Match Analysis</h4>
                         <p><strong>Overall Match:</strong> ${candidate.match_score || 0}%</p>
                         <p><strong>Skill Match:</strong> ${candidate.skill_match || 0}%</p>
                         <p><strong>Experience Match:</strong> ${candidate.experience_match || 0}%</p>
                     </div>
                 </div>
                 
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h6 class="fw-bold">Skills</h6>
-                        <div class="mb-3">
+                <div class="mt-4">
+                    <h4 class="mb-3">Skills</h4>
+                    <div class="mb-3">
             `;
 
             if (candidate.skills && candidate.skills.length > 0) {
@@ -536,14 +723,12 @@
             }
 
             detailsHtml += `
-                        </div>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-12">
-                        <h6 class="fw-bold">Why This Candidate Matches</h6>
-                        <ul>
+                <div class="mt-4">
+                    <h4 class="mb-3">Why This Candidate Matches</h4>
+                    <ul>
             `;
 
             if (candidate.match_reasons && candidate.match_reasons.length > 0) {
@@ -555,15 +740,12 @@
             }
 
             detailsHtml += `
-                        </ul>
-                    </div>
+                    </ul>
                 </div>
 
-                <div class="row">
-                    <div class="col-12">
-                        <h6 class="fw-bold">Professional Summary</h6>
-                        <p class="text-muted">${candidate.summary || 'No summary available'}</p>
-                    </div>
+                <div class="mt-4">
+                    <h4 class="mb-3">Professional Summary</h4>
+                    <p class="text-secondary">${candidate.summary || 'No summary available'}</p>
                 </div>
             `;
 
@@ -576,21 +758,25 @@
         function showWarning(message) {
             // Create a temporary warning alert
             const warningDiv = document.createElement('div');
-            warningDiv.className = 'alert alert-warning alert-dismissible fade show';
+            warningDiv.className = 'alert alert-warning';
             warningDiv.innerHTML = `
-                <i class="fas fa-exclamation-triangle me-2"></i>${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <i class="fas fa-exclamation-triangle icon"></i> ${message}
+                <button type="button" class="btn btn-small" onclick="this.parentElement.remove()" style="float: right;">
+                    <i class="fas fa-times"></i>
+                </button>
             `;
             
-            document.querySelector('.container').insertBefore(warningDiv, document.querySelector('.row'));
+            document.querySelector('.main-container').insertBefore(warningDiv, document.querySelector('.search-layout'));
             
             // Auto-hide after 5 seconds
             setTimeout(() => {
-                warningDiv.remove();
+                if (warningDiv.parentElement) {
+                    warningDiv.remove();
+                }
             }, 5000);
         }
 
-        // Export Functions
+        // Export Functions (PRESERVED)
         function exportResults() {
             if (!searchResults || searchResults.length === 0) {
                 alert('No results to export. Please perform a search first.');
@@ -604,17 +790,17 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Export Search Results</h5>
+                                <h3 class="modal-title">Export Search Results</h3>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
                                 <p>Export ${searchResults.length} candidates in your preferred format:</p>
-                                <div class="d-grid gap-2">
+                                <div class="grid grid-2" style="gap: 1rem;">
                                     <button class="btn btn-primary" onclick="downloadExport('csv')">
-                                        <i class="fas fa-file-csv me-2"></i>Download as CSV
+                                        <i class="fas fa-file-csv icon"></i> Download as CSV
                                     </button>
-                                    <button class="btn btn-info" onclick="downloadExport('json')">
-                                        <i class="fas fa-file-code me-2"></i>Download as JSON
+                                    <button class="btn" onclick="downloadExport('json')">
+                                        <i class="fas fa-file-code icon"></i> Download as JSON
                                     </button>
                                 </div>
                             </div>
@@ -656,6 +842,38 @@
                 alert('Export error: ' + error.message);
             }
         }
+
+        // Scroll animations (ENHANCED)
+        function addScrollAnimations() {
+            const animateElements = document.querySelectorAll('.animate-fadeInUp, .animate-fadeInLeft');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) translateX(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animateElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transition = 'all 0.6s ease-out';
+                if (el.classList.contains('animate-fadeInUp')) {
+                    el.style.transform = 'translateY(30px)';
+                } else if (el.classList.contains('animate-fadeInLeft')) {
+                    el.style.transform = 'translateX(-30px)';
+                }
+                observer.observe(el);
+            });
+        }
+
+        // Initialize (PRESERVED + ENHANCED)
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            addScrollAnimations();
+        });
     </script>
 </body>
 </html>

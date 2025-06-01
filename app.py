@@ -15,6 +15,7 @@ load_dotenv()
 from utils.resume_parser import ResumeParser
 from utils.ai_matcher import AIMatcher
 from utils.job_analyzer import JobAnalyzer
+from utils.query_parser import NaturalLanguageQueryParser
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -45,6 +46,14 @@ except Exception as e:
     ai_matcher = AIMatcher()
     job_analyzer = JobAnalyzer()
 
+# 🆕 Initialize PeopleGPT Query Parser
+try:
+    query_parser = NaturalLanguageQueryParser()
+    print("✅ PeopleGPT Query Parser initialized successfully")
+except Exception as e:
+    print(f"❌ Error initializing PeopleGPT Query Parser: {e}")
+    query_parser = None
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -53,9 +62,24 @@ def home():
 def upload_page():
     return render_template('upload.html')
 
+# 🆕 UPDATED: PeopleGPT Search Page
 @app.route('/search')
 def search_page():
-    return render_template('search.html')
+    """
+    PeopleGPT Search Page - Natural Language Candidate Search
+    Built by Team Seeds! 🌱 for pranamya-jain
+    
+    Features:
+    - Natural language query parsing
+    - Chat-like search interface
+    - Real-time IST timestamps
+    - Query suggestions
+    - AI-powered candidate matching
+    
+    Template: search_enhanced.html
+    Current: 2025-05-31 19:00:54 UTC
+    """
+    return render_template('search_enhanced.html')
 
 @app.route('/analytics')
 def analytics_page():
@@ -137,11 +161,124 @@ def search_candidates():
             'candidates': matched_candidates,
             'total': len(matched_candidates),
             'parsed_criteria': parsed_criteria,
-            'ai_enabled': ai_matcher.ai_available
+            'ai_enabled': ai_matcher.ai_available,
+            'searched_by': 'pranamya-jain',
+            'search_time': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') + ' UTC'
         })
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# 🆕 NEW: PeopleGPT Natural Language Query Parser API
+@app.route('/api/parse_query', methods=['POST'])
+def parse_natural_language_query():
+    """
+    PeopleGPT - Parse natural language search queries
+    Built by Team Seeds! 🌱 for pranamya-jain
+    """
+    try:
+        if not query_parser:
+            return jsonify({
+                'success': False,
+                'error': 'PeopleGPT Query Parser not available'
+            }), 500
+            
+        data = request.get_json()
+        query = data.get('query', '').strip()
+        
+        if not query:
+            return jsonify({
+                'success': False,
+                'error': 'Query is required'
+            }), 400
+        
+        # Validate query
+        validation = query_parser.validate_query(query)
+        if not validation['valid']:
+            return jsonify({
+                'success': False,
+                'error': validation['error']
+            }), 400
+        
+        # Parse the query
+        parsed_result = query_parser.parse_query(query)
+        
+        return jsonify({
+            'success': True,
+            'parsed_query': parsed_result,
+            'examples': query_parser.get_query_examples(),
+            'message': f'Query parsed successfully by pranamya-jain',
+            'timestamp': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') + ' UTC'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Query parsing failed: {str(e)}'
+        }), 500
+
+# 🆕 NEW: PeopleGPT Integrated Search API
+@app.route('/api/peoplegpt_search', methods=['POST'])
+def peoplegpt_search():
+    """
+    PeopleGPT - Natural language search with AI parsing and candidate matching
+    """
+    try:
+        if not query_parser:
+            return jsonify({
+                'success': False,
+                'error': 'PeopleGPT not available'
+            }), 500
+            
+        data = request.get_json()
+        natural_query = data.get('query', '').strip()
+        
+        if not natural_query:
+            return jsonify({
+                'success': False,
+                'error': 'Natural language query is required'
+            }), 400
+        
+        # Step 1: Parse natural language query
+        parsed_result = query_parser.parse_query(natural_query)
+        
+        # Step 2: Load candidates
+        candidates = load_candidates()
+        
+        if not candidates:
+            return jsonify({
+                'success': True,
+                'candidates': [],
+                'parsed_query': parsed_result,
+                'total_found': 0,
+                'search_summary': 'No candidates found in database',
+                'message': 'Upload some resumes to start searching!'
+            })
+        
+        # Step 3: Use AI matcher with parsed job description
+        matched_candidates = ai_matcher.match_candidates(
+            parsed_result['job_description'], 
+            candidates, 
+            parsed_result['filters']
+        )
+        
+        return jsonify({
+            'success': True,
+            'candidates': matched_candidates,
+            'parsed_query': parsed_result,
+            'total_found': len(matched_candidates),
+            'search_summary': f"Found {len(matched_candidates)} candidates matching your criteria",
+            'original_query': natural_query,
+            'searched_by': 'pranamya-jain',
+            'search_time': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') + ' UTC',
+            'ai_enabled': ai_matcher.ai_available and query_parser is not None
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'PeopleGPT search failed: {str(e)}'
+        }), 500
 
 @app.route('/api/analyze_job', methods=['POST'])
 def analyze_job():
@@ -221,14 +358,21 @@ def get_analytics():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# 🆕 UPDATED: Health check endpoint with PeopleGPT status
 @app.route('/api/health')
 def health_check():
-    """Health check endpoint"""
+    """Health check endpoint with PeopleGPT status"""
     return jsonify({
         'status': 'healthy',
+        'app': 'HireAI',
+        'component': 'PeopleGPT',
         'ai_enabled': ai_matcher.ai_available if ai_matcher else False,
         'gemini_available': ai_matcher.ai_available if ai_matcher else False,
-        'total_candidates': len(load_candidates())
+        'peoplegpt_enabled': query_parser is not None,
+        'total_candidates': len(load_candidates()),
+        'user': 'pranamya-jain',
+        'team': 'Seeds! 🌱',
+        'timestamp': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') + ' UTC'
     })
 
 @app.route('/api/export_candidates', methods=['POST'])
@@ -411,13 +555,20 @@ def generate_export_insights(analytics):
         insights.append(f"Senior talent percentage: {senior_percentage:.1f}%")
     
     return insights
+
 # Add these imports to your app.py
-from reportlab.lib.pagesizes import letter, A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib import colors
-import pandas as pd
+try:
+    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+    from reportlab.lib import colors
+    import pandas as pd
+    ADVANCED_EXPORT_AVAILABLE = True
+    print("✅ Advanced export libraries (reportlab, pandas) available")
+except ImportError:
+    ADVANCED_EXPORT_AVAILABLE = False
+    print("⚠️ Advanced export libraries not available. Install with: pip install reportlab pandas openpyxl")
 
 @app.route('/api/export_analytics', methods=['POST'])
 def export_analytics():
@@ -433,12 +584,12 @@ def export_analytics():
             return export_analytics_json(analytics)
         elif format_type == 'csv':
             return export_analytics_csv(analytics)
-        elif format_type == 'pdf':
+        elif format_type == 'pdf' and ADVANCED_EXPORT_AVAILABLE:
             return export_analytics_pdf(analytics)
-        elif format_type == 'excel':
+        elif format_type == 'excel' and ADVANCED_EXPORT_AVAILABLE:
             return export_analytics_excel(analytics)
         else:
-            return jsonify({'error': 'Unsupported format'}), 400
+            return jsonify({'error': 'Unsupported format or missing dependencies. Install: pip install reportlab pandas openpyxl'}), 400
             
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -452,7 +603,8 @@ def export_analytics_json(analytics):
         'total_candidates': len(load_candidates()),
         'analytics': analytics,
         'insights': generate_export_insights(analytics),
-        'ai_enabled': ai_matcher.ai_available if ai_matcher else False
+        'ai_enabled': ai_matcher.ai_available if ai_matcher else False,
+        'peoplegpt_enabled': query_parser is not None
     }
     
     mem = io.BytesIO()
@@ -543,6 +695,9 @@ def export_analytics_csv(analytics):
 
 def export_analytics_excel(analytics):
     """Export analytics as Excel with multiple sheets"""
+    if not ADVANCED_EXPORT_AVAILABLE:
+        return jsonify({'error': 'Excel export requires pandas and openpyxl. Install with: pip install pandas openpyxl'}), 500
+        
     try:
         # Create Excel file in memory
         output = io.BytesIO()
@@ -601,11 +756,14 @@ def export_analytics_excel(analytics):
             download_name=f'analytics_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx'
         )
         
-    except ImportError:
-        return jsonify({'error': 'Excel export requires pandas and openpyxl. Install with: pip install pandas openpyxl'}), 500
+    except Exception as e:
+        return jsonify({'error': f'Excel export failed: {str(e)}'}), 500
 
 def export_analytics_pdf(analytics):
     """Export analytics as PDF report"""
+    if not ADVANCED_EXPORT_AVAILABLE:
+        return jsonify({'error': 'PDF export requires reportlab. Install with: pip install reportlab'}), 500
+        
     try:
         # Create PDF in memory
         buffer = io.BytesIO()
@@ -718,11 +876,46 @@ def export_analytics_pdf(analytics):
             download_name=f'analytics_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf'
         )
         
-    except ImportError:
-        return jsonify({'error': 'PDF export requires reportlab. Install with: pip install reportlab'}), 500
+    except Exception as e:
+        return jsonify({'error': f'PDF export failed: {str(e)}'}), 500
+
+# Helper function to integrate PeopleGPT with existing search
+def search_candidates_internal(search_request):
+    """
+    Internal function to reuse existing search logic for PeopleGPT
+    """
+    try:
+        job_description = search_request.get('job_description', '')
+        filters = search_request.get('filters', {})
+        
+        # Load candidates from our database
+        candidates = load_candidates()
+        
+        if not candidates:
+            return []
+        
+        # Use AI to match candidates
+        matched_candidates = ai_matcher.match_candidates(
+            job_description, 
+            candidates, 
+            filters
+        )
+        
+        return matched_candidates
+        
+    except Exception as e:
+        print(f"❌ Error in search_candidates_internal: {e}")
+        return []
 
 if __name__ == '__main__':
-    print("🚀 Starting HireAI Application...")
+    print("🚀 Starting HireAI Application with PeopleGPT...")
+    print(f"👤 User: pranamya-jain")
+    print(f"🌱 Team: Seeds!")
+    print(f"🕐 Started at: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC")
     print(f"📁 Upload folder: {app.config['UPLOAD_FOLDER']}")
     print(f"🤖 AI enabled: {ai_matcher.ai_available if ai_matcher else False}")
+    print(f"🗨️ PeopleGPT enabled: {query_parser is not None}")
+    print(f"📊 Advanced exports: {ADVANCED_EXPORT_AVAILABLE}")
+    print(f"🔗 PeopleGPT available at: http://localhost:5001/search")
+    print("-" * 60)
     app.run(debug=True, port=5001)

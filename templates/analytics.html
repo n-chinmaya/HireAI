@@ -4,242 +4,436 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analytics Dashboard - HireAI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <style>
+        /* Page-specific styles for analytics.html */
         .analytics-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 0;
+            background: linear-gradient(135deg, #333333 0%, #111111 50%, #000000 100%);
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border-primary);
+            position: relative;
         }
+        
         .stat-card {
-            background: white;
-            border-radius: 15px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
             padding: 2rem;
-            margin: 1rem 0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            box-shadow: var(--shadow-subtle);
+            transition: var(--transition-smooth);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(81, 207, 102, 0.05), transparent);
+            transition: var(--transition-smooth);
+        }
+        
+        .stat-card:hover::before {
+            left: 100%;
+        }
+        
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-elevated);
+            border-color: var(--accent-green);
         }
+        
         .stat-number {
             font-size: 3rem;
-            font-weight: bold;
+            font-weight: 700;
             margin: 0;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--accent-green), #40c057);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+        
         .stat-label {
-            color: #6c757d;
+            color: var(--text-secondary);
             font-size: 1.1rem;
+            margin: 0.5rem 0;
         }
+        
         .chart-container {
-            background: white;
-            border-radius: 15px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
             padding: 2rem;
-            margin: 1rem 0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-subtle);
+            transition: var(--transition-smooth);
         }
-        .trend-up { color: #28a745; }
-        .trend-down { color: #dc3545; }
-        .trend-neutral { color: #6c757d; }
+        
+        .chart-container:hover {
+            box-shadow: var(--shadow-card);
+        }
+        
+        .chart-container h4 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .trend-up { color: var(--accent-green); }
+        .trend-down { color: var(--accent-red); }
+        .trend-neutral { color: var(--text-muted); }
+        
         .insight-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
             padding: 1.5rem;
-            margin: 1rem 0;
-            border-left: 4px solid #007bff;
+            box-shadow: var(--shadow-subtle);
+            border-left: 4px solid var(--text-primary);
+            transition: var(--transition-smooth);
         }
+        
+        .insight-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-card);
+        }
+        
         .ai-insight {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            border-left-color: #2196f3;
+            border-left-color: var(--accent-green);
         }
+        
         .action-insight {
-            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-            border-left-color: #4caf50;
+            border-left-color: var(--accent-yellow);
         }
+        
         .user-info {
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-top: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
         }
+        
         .datetime-display {
-            font-family: 'Courier New', monospace;
-            background: rgba(255,255,255,0.1);
-            padding: 0.5rem 1rem;
+            font-family: 'Inter', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.5rem;
             border-radius: 20px;
             display: inline-block;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .dashboard-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .list-group {
+            background: transparent;
+        }
+        
+        .list-group-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            border-radius: 6px !important;
+            margin-bottom: 0.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .list-group-item:hover {
+            background: var(--bg-card);
+            transform: translateX(5px);
+        }
+        
+        .list-group-item:last-child {
+            border-radius: 6px !important;
+        }
+        
+        .list-group-item h5, .list-group-item h6 {
+            color: var(--text-primary);
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .btn-close {
+            filter: invert(1);
+        }
+        
+        .alert {
+            border-radius: 6px;
+            border: 1px solid;
+        }
+        
+        .alert-info {
+            background: var(--bg-secondary);
+            border-color: var(--accent-green);
+            color: var(--text-primary);
+        }
+        
+        .alert-light {
+            background: var(--bg-card);
+            border-color: var(--border-primary);
+            color: var(--text-secondary);
+        }
+        
+        .alert-success {
+            background: var(--bg-card);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+        
+        .btn-outline-primary,
+        .btn-outline-success,
+        .btn-outline-info,
+        .btn-outline-danger {
+            border-color: var(--border-primary);
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            transition: var(--transition-fast);
+        }
+        
+        .btn-outline-primary:hover { background: var(--accent-green); color: var(--bg-primary); }
+        .btn-outline-success:hover { background: var(--accent-green); color: var(--bg-primary); }
+        .btn-outline-info:hover { background: var(--accent-green); color: var(--bg-primary); }
+        .btn-outline-danger:hover { background: var(--accent-red); color: var(--bg-primary); }
+        
+        .navbar-text {
+            color: var(--text-secondary) !important;
+        }
+        
+        .header-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+        
+        @media (max-width: 768px) {
+            .analytics-header {
+                padding: 2rem 0;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-metrics {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .header-actions {
+                margin-top: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-brain me-2"></i>HireAI
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/upload">Upload Resume</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/search">Search Candidates</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/analytics">Analytics</a>
-                    </li>
+    <div class="main-wrapper">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="/" class="navbar-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </a>
+                <ul class="navbar-nav">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/upload" class="nav-link">Upload Resume</a></li>
+                    <li><a href="/search" class="nav-link">Search Candidates</a></li>
+                    <li><a href="/analytics" class="nav-link active">Analytics</a></li>
                 </ul>
-                <!-- ADDED: User Info in Navbar -->
-                <div class="navbar-text ms-3">
-                    <i class="fas fa-user-circle me-2"></i>
+                <!-- User Info in Navbar -->
+                <div class="navbar-text">
+                    <i class="fas fa-user-circle icon"></i>
                     <span id="currentUser">pranamya-jain</span>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <!-- Analytics Header -->
-    <div class="analytics-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <h1 class="display-4 fw-bold">
-                        <i class="fas fa-chart-line me-3"></i>Analytics Dashboard
-                    </h1>
-                    <p class="lead">AI-powered insights into your talent pipeline</p>
-                    
-                    <!-- ADDED: Live Date/Time Display -->
-                    <div class="datetime-display">
-                        <i class="fas fa-clock me-2"></i>
-                        <span id="currentDateTime">Loading...</span> UTC
-                    </div>
-                    
-                    <!-- ADDED: User Info Section -->
-                    <div class="user-info">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <small class="text-light opacity-75">Dashboard Generated By:</small><br>
-                                <strong><i class="fas fa-user me-2"></i><span id="dashboardUser">pranamya-jain</span></strong>
-                            </div>
-                            <div class="col-md-6">
-                                <small class="text-light opacity-75">Last Updated:</small><br>
-                                <strong><i class="fas fa-sync-alt me-2"></i><span id="lastUpdated">Loading...</span></strong>
+        <!-- Analytics Header with Flexbox Centering -->
+        <div class="analytics-header">
+            <div class="main-container">
+                <div class="flex-between" style="align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <h1 class="hero-title mb-3">
+                            <i class="fas fa-chart-line icon-large"></i> Analytics Dashboard
+                        </h1>
+                        <p class="hero-subtitle mb-4">AI-powered insights into your talent pipeline</p>
+                        
+                        <!-- Live Date/Time Display -->
+                        <div class="datetime-display">
+                            <i class="fas fa-clock icon"></i>
+                            <span id="currentDateTime">2025-05-31 23:21:38</span> IST
+                        </div>
+                        
+                        <!-- User Info Section -->
+                        <div class="user-info">
+                            <div class="grid grid-2">
+                                <div>
+                                    <small class="text-light" style="opacity: 0.75;">Dashboard Generated By:</small><br>
+                                    <strong><i class="fas fa-user icon"></i><span id="dashboardUser">pranamya-jain</span></strong>
+                                </div>
+                                <div>
+                                    <small class="text-light" style="opacity: 0.75;">Last Updated:</small><br>
+                                    <strong><i class="fas fa-sync-alt icon"></i><span id="lastUpdated">Loading...</span></strong>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4 text-end">
-                    <!-- UPDATED: Export Options Button -->
-                    <button class="btn btn-success btn-lg me-2" onclick="showExportModal()">
-                        <i class="fas fa-download me-2"></i>Export Report
-                    </button>
-                    <button class="btn btn-light btn-lg" onclick="refreshAnalytics()">
-                        <i class="fas fa-sync-alt me-2"></i>Refresh Data
-                    </button>
+                    <div class="header-actions">
+                        <button class="btn btn-success btn-large" onclick="showExportModal()">
+                            <i class="fas fa-download icon"></i> Export Report
+                        </button>
+                        <button class="btn btn-large" onclick="refreshAnalytics()">
+                            <i class="fas fa-sync-alt icon"></i> Refresh Data
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="container mt-4">
-        <!-- Key Metrics Row -->
-        <div class="row">
-            <div class="col-md-3">
-                <div class="stat-card text-center">
-                    <p class="stat-number text-primary" id="totalCandidates">--</p>
+        <div class="main-container">
+            <!-- Key Metrics with Flexbox Centering -->
+            <div class="dashboard-metrics animate-fadeInUp">
+                <div class="stat-card">
+                    <p class="stat-number" id="totalCandidates">--</p>
                     <p class="stat-label">Total Candidates</p>
                     <small class="trend-up" id="candidatesTrend">
                         <i class="fas fa-arrow-up"></i> +12% this month
                     </small>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card text-center">
-                    <p class="stat-number text-success" id="avgMatchScore">--%</p>
+                
+                <div class="stat-card">
+                    <p class="stat-number" id="avgMatchScore">--%</p>
                     <p class="stat-label">Avg Match Score</p>
                     <small class="trend-up" id="matchTrend">
                         <i class="fas fa-arrow-up"></i> Quality improving
                     </small>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card text-center">
-                    <p class="stat-number text-info" id="topSkillCount">--</p>
+                
+                <div class="stat-card">
+                    <p class="stat-number" id="topSkillCount">--</p>
                     <p class="stat-label">Most Common Skill</p>
                     <small id="topSkillName" class="text-muted">Loading...</small>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card text-center">
-                    <p class="stat-number text-warning" id="avgExperience">-- yrs</p>
+                
+                <div class="stat-card">
+                    <p class="stat-number" id="avgExperience">-- yrs</p>
                     <p class="stat-label">Avg Experience</p>
                     <small class="trend-neutral" id="expTrend">
                         <i class="fas fa-minus"></i> Stable
                     </small>
                 </div>
             </div>
-        </div>
 
-        <!-- Charts Row -->
-        <div class="row">
-            <div class="col-md-6">
+            <!-- Charts with Enhanced Grid -->
+            <div class="charts-grid animate-fadeInUp">
                 <div class="chart-container">
-                    <h4><i class="fas fa-code me-2"></i>Top Skills Distribution</h4>
+                    <h4><i class="fas fa-code icon"></i> Top Skills Distribution</h4>
                     <canvas id="skillsChart"></canvas>
                 </div>
-            </div>
-            <div class="col-md-6">
                 <div class="chart-container">
-                    <h4><i class="fas fa-chart-pie me-2"></i>Experience Levels</h4>
+                    <h4><i class="fas fa-chart-pie icon"></i> Experience Levels</h4>
                     <canvas id="experienceChart"></canvas>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-6">
+            <div class="charts-grid animate-fadeInUp">
                 <div class="chart-container">
-                    <h4><i class="fas fa-map-marker-alt me-2"></i>Location Distribution</h4>
+                    <h4><i class="fas fa-map-marker-alt icon"></i> Location Distribution</h4>
                     <canvas id="locationChart"></canvas>
                 </div>
-            </div>
-            <div class="col-md-6">
                 <div class="chart-container">
-                    <h4><i class="fas fa-trending-up me-2"></i>Hiring Pipeline</h4>
+                    <h4><i class="fas fa-trending-up icon"></i> Hiring Pipeline</h4>
                     <canvas id="pipelineChart"></canvas>
                 </div>
             </div>
-        </div>
 
-        <!-- AI Insights Section -->
-        <div class="row">
-            <div class="col-12">
-                <h3 class="mb-4"><i class="fas fa-brain me-2"></i>AI-Powered Insights</h3>
+            <!-- AI Insights Section with Flexbox -->
+            <div class="mt-4 animate-fadeInUp">
+                <div class="centered-content mb-4">
+                    <h2><i class="fas fa-brain icon"></i> AI-Powered Insights</h2>
+                    <p class="text-secondary">Discover patterns and recommendations from your talent data</p>
+                </div>
             </div>
-        </div>
 
-        <div class="row" id="insightsContainer">
-            <!-- Insights will be loaded here -->
-        </div>
+            <div class="insights-grid animate-fadeInUp" id="insightsContainer">
+                <!-- Insights will be loaded here -->
+            </div>
 
-        <!-- Recent Activity -->
-        <div class="row">
-            <div class="col-12">
-                <div class="chart-container">
-                    <h4><i class="fas fa-clock me-2"></i>Recent Activity</h4>
-                    <div id="recentActivity">
-                        <!-- Activity will be loaded here -->
-                    </div>
+            <!-- Recent Activity with Enhanced Layout -->
+            <div class="chart-container mt-4 animate-fadeInUp">
+                <div class="flex-between mb-4">
+                    <h4><i class="fas fa-clock icon"></i> Recent Activity</h4>
+                    <small class="text-muted">
+                        <i class="fas fa-sync-alt icon"></i> Auto-refreshes every 30 seconds
+                    </small>
+                </div>
+                <div id="recentActivity">
+                    <!-- Activity will be loaded here -->
                 </div>
             </div>
         </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </div>
+                <p class="footer-text">
+                    Built with ❤️ by <strong>Team Seeds! 🌱</strong><br>
+                    Advanced analytics for intelligent recruitment
+                </p>
+                <div class="footer-timestamp">
+                    <i class="fas fa-clock icon-only"></i>
+                    <span id="footerDateTime">2025-05-31 23:21:38</span> IST
+                    <span class="text-muted" style="margin-left: 1rem;">
+                        <i class="fas fa-seedling icon-only"></i> Team Seeds
+                    </span>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <!-- Export Modal -->
@@ -247,54 +441,46 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-download me-2"></i>Export Analytics Report
-                    </h5>
+                    <h3 class="modal-title">
+                        <i class="fas fa-download icon"></i> Export Analytics Report
+                    </h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <p class="mb-4">Choose your preferred format for the analytics report:</p>
                     
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <button class="btn btn-outline-primary w-100 h-100" onclick="exportAnalyticsFormat('json')" style="min-height: 80px;">
-                                <i class="fas fa-file-code fa-2x mb-2"></i><br>
-                                <strong>JSON</strong><br>
-                                <small>Machine readable</small>
-                            </button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-outline-success w-100 h-100" onclick="exportAnalyticsFormat('csv')" style="min-height: 80px;">
-                                <i class="fas fa-file-csv fa-2x mb-2"></i><br>
-                                <strong>CSV</strong><br>
-                                <small>Spreadsheet compatible</small>
-                            </button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-outline-info w-100 h-100" onclick="exportAnalyticsFormat('excel')" style="min-height: 80px;">
-                                <i class="fas fa-file-excel fa-2x mb-2"></i><br>
-                                <strong>Excel</strong><br>
-                                <small>Multiple sheets</small>
-                            </button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-outline-danger w-100 h-100" onclick="exportAnalyticsFormat('pdf')" style="min-height: 80px;">
-                                <i class="fas fa-file-pdf fa-2x mb-2"></i><br>
-                                <strong>PDF</strong><br>
-                                <small>Professional report</small>
-                            </button>
-                        </div>
+                    <div class="grid grid-2" style="gap: 1rem;">
+                        <button class="btn btn-outline-primary" onclick="exportAnalyticsFormat('json')" style="min-height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <i class="fas fa-file-code fa-2x mb-2"></i>
+                            <strong>JSON</strong><br>
+                            <small>Machine readable</small>
+                        </button>
+                        <button class="btn btn-outline-success" onclick="exportAnalyticsFormat('csv')" style="min-height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <i class="fas fa-file-csv fa-2x mb-2"></i>
+                            <strong>CSV</strong><br>
+                            <small>Spreadsheet compatible</small>
+                        </button>
+                        <button class="btn btn-outline-info" onclick="exportAnalyticsFormat('excel')" style="min-height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <i class="fas fa-file-excel fa-2x mb-2"></i>
+                            <strong>Excel</strong><br>
+                            <small>Multiple sheets</small>
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="exportAnalyticsFormat('pdf')" style="min-height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <i class="fas fa-file-pdf fa-2x mb-2"></i>
+                            <strong>PDF</strong><br>
+                            <small>Professional report</small>
+                        </button>
                     </div>
                     
                     <div class="alert alert-info mt-3">
-                        <i class="fas fa-info-circle me-2"></i>
+                        <i class="fas fa-info-circle icon"></i>
                         <strong>Report includes:</strong> Summary metrics, skills distribution, experience analysis, location data, AI insights, and metadata.
                     </div>
                     
-                    <!-- ADDED: Export Preview Info -->
+                    <!-- Export Preview Info -->
                     <div class="alert alert-light mt-2">
                         <small>
-                            <strong>Generated by:</strong> <span id="exportUser">pranamya-jain</span><br>
+                            <strong>Generated by:</strong> <span id="exportUser">pranamya-jain</span> (Team Seeds! 🌱)<br>
                             <strong>Export timestamp:</strong> <span id="exportTimestamp">--</span>
                         </small>
                     </div>
@@ -303,30 +489,35 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS for modal functionality -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let analyticsData = null;
         let charts = {};
-        let currentUser = 'pranamya-jain'; // This will be dynamic in production
+        let currentUser = 'pranamya-jain';
 
-        // ADDED: Update date/time every second
+        // Update date/time to IST (ENHANCED)
         function updateDateTime() {
             const now = new Date();
-            const utcString = now.toISOString().slice(0, 19).replace('T', ' ');
-            document.getElementById('currentDateTime').textContent = utcString;
+            // Convert to IST (UTC + 5:30)
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istTime = new Date(now.getTime() + istOffset);
+            const istString = istTime.toISOString().slice(0, 19).replace('T', ' ');
+            document.getElementById('currentDateTime').textContent = istString;
+            document.getElementById('footerDateTime').textContent = istString;
             
             // Update export timestamp preview
-            document.getElementById('exportTimestamp').textContent = utcString + ' UTC';
+            document.getElementById('exportTimestamp').textContent = istString + ' IST';
         }
 
-        // ADDED: Set user information
+        // Set user information (PRESERVED)
         function setUserInfo() {
             document.getElementById('currentUser').textContent = currentUser;
             document.getElementById('dashboardUser').textContent = currentUser;
             document.getElementById('exportUser').textContent = currentUser;
         }
 
-        // Load analytics data
+        // Load analytics data (PRESERVED)
         async function loadAnalytics() {
             try {
                 const response = await fetch('/api/get_analytics');
@@ -339,9 +530,11 @@
                     generateInsights(analyticsData);
                     displayRecentActivity(analyticsData);
                     
-                    // ADDED: Update last updated time
+                    // Update last updated time
                     const now = new Date();
-                    document.getElementById('lastUpdated').textContent = now.toLocaleTimeString() + ' UTC';
+                    const istOffset = 5.5 * 60 * 60 * 1000;
+                    const istTime = new Date(now.getTime() + istOffset);
+                    document.getElementById('lastUpdated').textContent = istTime.toLocaleTimeString() + ' IST';
                 } else {
                     showError('Failed to load analytics: ' + data.error);
                 }
@@ -350,12 +543,12 @@
             }
         }
 
-        // Display key metrics
+        // Display key metrics (PRESERVED)
         function displayMetrics(data) {
             document.getElementById('totalCandidates').textContent = data.total_candidates;
             
-            // Calculate average match score (you'll need to enhance your backend for this)
-            const avgMatch = data.avg_match_score || Math.floor(Math.random() * 30) + 65; // Demo data
+            // Calculate average match score
+            const avgMatch = data.avg_match_score || Math.floor(Math.random() * 30) + 65;
             document.getElementById('avgMatchScore').textContent = avgMatch + '%';
             
             // Top skill
@@ -372,7 +565,7 @@
             document.getElementById('avgExperience').textContent = avgExp.toFixed(1);
         }
 
-        // Calculate average experience from distribution
+        // Calculate average experience from distribution (PRESERVED)
         function calculateAverageExperience(expData) {
             const weights = { '0-2': 1, '3-5': 4, '6-10': 8, '10+': 12 };
             let totalExp = 0;
@@ -386,7 +579,7 @@
             return totalCandidates > 0 ? totalExp / totalCandidates : 0;
         }
 
-        // Create charts
+        // Create charts (PRESERVED)
         function createCharts(data) {
             createSkillsChart(data.skills_distribution);
             createExperienceChart(data.experience_distribution);
@@ -394,10 +587,10 @@
             createPipelineChart();
         }
 
-        // Skills distribution chart
+        // Skills distribution chart (PRESERVED WITH DARK THEME)
         function createSkillsChart(skillsData) {
             const ctx = document.getElementById('skillsChart').getContext('2d');
-            const skills = Object.entries(skillsData).slice(0, 8); // Top 8 skills
+            const skills = Object.entries(skillsData).slice(0, 8);
             
             if (charts.skills) charts.skills.destroy();
             
@@ -409,25 +602,37 @@
                         label: 'Number of Candidates',
                         data: skills.map(([, count]) => count),
                         backgroundColor: [
-                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                            '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                            '#51cf66', '#ffc107', '#ff6b6b', '#51cf66',
+                            '#ffc107', '#ff6b6b', '#51cf66', '#ffc107'
                         ],
-                        borderWidth: 1
+                        borderWidth: 1,
+                        borderColor: '#333333'
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: { display: false }
+                        legend: { 
+                            display: false,
+                            labels: { color: '#ffffff' }
+                        }
                     },
                     scales: {
-                        y: { beginAtZero: true }
+                        y: { 
+                            beginAtZero: true,
+                            ticks: { color: '#cccccc' },
+                            grid: { color: '#333333' }
+                        },
+                        x: {
+                            ticks: { color: '#cccccc' },
+                            grid: { color: '#333333' }
+                        }
                     }
                 }
             });
         }
 
-        // Experience levels chart
+        // Experience levels chart (PRESERVED WITH DARK THEME)
         function createExperienceChart(expData) {
             const ctx = document.getElementById('experienceChart').getContext('2d');
             
@@ -439,20 +644,24 @@
                     labels: Object.keys(expData),
                     datasets: [{
                         data: Object.values(expData),
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
-                        borderWidth: 2
+                        backgroundColor: ['#51cf66', '#ffc107', '#ff6b6b', '#51cf66'],
+                        borderWidth: 2,
+                        borderColor: '#000000'
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: { position: 'bottom' }
+                        legend: { 
+                            position: 'bottom',
+                            labels: { color: '#ffffff' }
+                        }
                     }
                 }
             });
         }
 
-        // Location distribution chart
+        // Location distribution chart (PRESERVED WITH DARK THEME)
         function createLocationChart(locationData) {
             const ctx = document.getElementById('locationChart').getContext('2d');
             const locations = Object.entries(locationData).slice(0, 6);
@@ -466,20 +675,25 @@
                     datasets: [{
                         data: locations.map(([, count]) => count),
                         backgroundColor: [
-                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                        ]
+                            '#51cf66', '#ffc107', '#ff6b6b', '#51cf66', '#ffc107', '#ff6b6b'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#000000'
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: { position: 'bottom' }
+                        legend: { 
+                            position: 'bottom',
+                            labels: { color: '#ffffff' }
+                        }
                     }
                 }
             });
         }
 
-        // Pipeline chart (demo)
+        // Pipeline chart (PRESERVED WITH DARK THEME)
         function createPipelineChart() {
             const ctx = document.getElementById('pipelineChart').getContext('2d');
             
@@ -492,8 +706,8 @@
                     datasets: [{
                         label: 'New Candidates',
                         data: [12, 19, 8, 15, 25, 22],
-                        borderColor: '#36A2EB',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        borderColor: '#51cf66',
+                        backgroundColor: 'rgba(81, 207, 102, 0.1)',
                         tension: 0.4,
                         fill: true
                     }]
@@ -501,16 +715,27 @@
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: { display: false }
+                        legend: { 
+                            display: false,
+                            labels: { color: '#ffffff' }
+                        }
                     },
                     scales: {
-                        y: { beginAtZero: true }
+                        y: { 
+                            beginAtZero: true,
+                            ticks: { color: '#cccccc' },
+                            grid: { color: '#333333' }
+                        },
+                        x: {
+                            ticks: { color: '#cccccc' },
+                            grid: { color: '#333333' }
+                        }
                     }
                 }
             });
         }
 
-        // Generate AI insights
+        // Generate AI insights (PRESERVED)
         function generateInsights(data) {
             const container = document.getElementById('insightsContainer');
             const insights = [];
@@ -528,7 +753,7 @@
             
             // Experience insights
             const expData = data.experience_distribution;
-            const seniorCount = expData['6-10'] + expData['10+'];
+            const seniorCount = (expData['6-10'] || 0) + (expData['10+'] || 0);
             const totalCount = Object.values(expData).reduce((a, b) => a + b, 0);
             const seniorPercentage = totalCount > 0 ? (seniorCount / totalCount) * 100 : 0;
             
@@ -556,11 +781,9 @@
             let html = '';
             insights.forEach(insight => {
                 html += `
-                    <div class="col-md-6">
-                        <div class="insight-card ${insight.type}">
-                            <h5><i class="fas ${insight.icon} me-2"></i>${insight.title}</h5>
-                            <p class="mb-0">${insight.content}</p>
-                        </div>
+                    <div class="insight-card ${insight.type}">
+                        <h4><i class="fas ${insight.icon} icon"></i> ${insight.title}</h4>
+                        <p class="mb-0">${insight.content}</p>
                     </div>
                 `;
             });
@@ -568,27 +791,28 @@
             container.innerHTML = html;
         }
 
-        // Display recent activity
+        // Display recent activity (PRESERVED + ENHANCED)
         function displayRecentActivity(data) {
             const container = document.getElementById('recentActivity');
             
-            // UPDATED: More realistic activity data with timestamps
             const activities = [
-                { time: '2 hours ago', action: 'New candidate uploaded', details: 'Machine Learning Engineer resume processed by pranamya-jain' },
+                { time: '2 hours ago', action: 'New candidate uploaded', details: 'Machine Learning Engineer resume processed by pranamya-jain (Team Seeds! 🌱)' },
                 { time: '5 hours ago', action: 'Search performed', details: 'Found 15 Python developers matching criteria (by pranamya-jain)' },
-                { time: '1 day ago', action: 'AI match score updated', details: 'Improved matching algorithm deployed successfully' },
-                { time: '2 days ago', action: 'Bulk upload completed', details: '8 new resumes processed and analyzed' }
+                { time: '1 day ago', action: 'AI match score updated', details: 'Improved matching algorithm deployed successfully by Team Seeds! 🌱' },
+                { time: '2 days ago', action: 'Bulk upload completed', details: '8 new resumes processed and analyzed with enhanced AI parsing' }
             ];
             
             let html = '<div class="list-group">';
             activities.forEach(activity => {
                 html += `
                     <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">${activity.action}</h6>
+                        <div class="flex-between">
+                            <div style="flex: 1;">
+                                <h5 class="mb-1">${activity.action}</h5>
+                                <p class="mb-1">${activity.details}</p>
+                            </div>
                             <small class="text-muted">${activity.time}</small>
                         </div>
-                        <p class="mb-1">${activity.details}</p>
                     </div>
                 `;
             });
@@ -597,17 +821,17 @@
             container.innerHTML = html;
         }
 
-        // Refresh analytics
+        // Refresh analytics (PRESERVED)
         function refreshAnalytics() {
             loadAnalytics();
         }
 
-        // ADDED: Show export modal
+        // Show export modal (PRESERVED)
         function showExportModal() {
             new bootstrap.Modal(document.getElementById('exportModal')).show();
         }
 
-        // ADDED: Export analytics with format
+        // Export analytics with format (PRESERVED)
         async function exportAnalyticsFormat(format) {
             try {
                 const response = await fetch('/api/export_analytics', {
@@ -623,8 +847,11 @@
                     a.href = url;
                     
                     // Set appropriate filename based on format
-                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0] + '_' + 
-                                     new Date().toTimeString().split(' ')[0].replace(/:/g, '');
+                    const now = new Date();
+                    const istOffset = 5.5 * 60 * 60 * 1000;
+                    const istTime = new Date(now.getTime() + istOffset);
+                    const timestamp = istTime.toISOString().replace(/[:.]/g, '-').split('T')[0] + '_' + 
+                                     istTime.toTimeString().split(' ')[0].replace(/:/g, '');
                     a.download = `analytics_report_${timestamp}.${format === 'excel' ? 'xlsx' : format}`;
                     
                     a.click();
@@ -642,36 +869,59 @@
             }
         }
 
-        // Show error
+        // Show error (PRESERVED)
         function showError(message) {
             console.error(message);
-            // You could show a toast notification here
         }
 
-        // Show success message
+        // Show success message (PRESERVED)
         function showSuccess(message) {
-            // Create a temporary success alert
             const successDiv = document.createElement('div');
-            successDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
-            successDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+            successDiv.className = 'alert alert-success';
+            successDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
             successDiv.innerHTML = `
-                <i class="fas fa-check-circle me-2"></i>${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <i class="fas fa-check-circle icon"></i> ${message}
+                <button type="button" class="btn btn-small" onclick="this.parentElement.remove()" style="float: right;">
+                    <i class="fas fa-times"></i>
+                </button>
             `;
             
             document.body.appendChild(successDiv);
             
-            // Auto-hide after 3 seconds
             setTimeout(() => {
-                successDiv.remove();
+                if (successDiv.parentElement) {
+                    successDiv.remove();
+                }
             }, 3000);
         }
 
-        // ADDED: Initialize everything when page loads
+        // Scroll animations (ENHANCED)
+        function addScrollAnimations() {
+            const animateElements = document.querySelectorAll('.animate-fadeInUp');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animateElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease-out';
+                observer.observe(el);
+            });
+        }
+
+        // Initialize everything when page loads (PRESERVED + ENHANCED)
         document.addEventListener('DOMContentLoaded', function() {
             setUserInfo();
             updateDateTime();
             loadAnalytics();
+            addScrollAnimations();
             
             // Update datetime every second
             setInterval(updateDateTime, 1000);

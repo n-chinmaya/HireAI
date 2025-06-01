@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeopleGPT Search - HireAI</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* COMPLETE SELF-CONTAINED CSS - GUARANTEED TO WORK */
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #2c2e33;
+            --text-primary: #ffffff;
+            --text-secondary: #c1c2c5;
+            --text-muted: #8c92ac;
+            --accent-green: #51cf66;
+            --accent-yellow: #ffc107;
+            --accent-red: #ff6b6b;
+            --border-primary: #343a40;
+            --shadow-subtle: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-elevated: 0 10px 25px rgba(0,0,0,0.3);
+            --transition-fast: all 0.2s ease;
+            --transition-smooth: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--accent-green);
+            background: rgba(81, 207, 102, 0.1);
+        }
+
+        .navbar-text {
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Main Layout */
+        .main-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        .centered-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* HERO STYLES - GUARANTEED TO WORK */
+        .hero-title {
+            font-size: 3.5rem !important;
+            font-weight: 700 !important;
+            margin-bottom: 1rem !important;
+            background: linear-gradient(135deg, #ffffff 0%, #51cf66 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+            text-align: center !important;
+            display: block !important;
+            line-height: 1.2 !important;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem !important;
+            color: rgba(255, 255, 255, 0.8) !important;
+            text-align: center !important;
+            font-weight: 400 !important;
+            line-height: 1.6 !important;
+            display: block !important;
+        }
+
+        .icon-large {
+            font-size: 1.2em !important;
+            margin-right: 0.5rem !important;
+        }
+
+        .datetime-display {
+            font-family: 'Inter', monospace !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            padding: 0.75rem 1.5rem !important;
+            border-radius: 20px !important;
+            display: inline-block !important;
+            font-weight: 500 !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        /* Utility Classes */
+        .mb-3 { margin-bottom: 1rem !important; }
+        .mb-4 { margin-bottom: 1.5rem !important; }
+        .mt-3 { margin-top: 1rem !important; }
+        .mt-2 { margin-top: 0.5rem !important; }
+        .text-muted { color: var(--text-muted) !important; }
+        .text-secondary { color: var(--text-secondary) !important; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .flex-center { display: flex; align-items: center; }
+        .icon { margin-right: 0.5rem; }
+        .icon-only { margin-right: 0; }
+        
+        /* PeopleGPT Container */
+        .peoplegpt-container {
+            background: linear-gradient(135deg, #333333 0%, #111111 50%, #000000 100%);
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border-primary);
+            margin-bottom: 2rem;
+        }
+        
+        /* Chat Input */
+        .chat-input-container {
+            background: var(--bg-card);
+            border: 2px solid var(--border-primary);
+            border-radius: 25px;
+            padding: 1rem;
+            box-shadow: var(--shadow-elevated);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+        
+        .chat-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            padding: 0.5rem 4rem 0.5rem 1rem;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            min-height: 50px;
+            resize: none;
+        }
+        
+        .chat-input::placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        
+        .chat-send-btn {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--accent-green);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .chat-send-btn:hover {
+            background: #40c057;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .chat-send-btn:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: translateY(-50%) scale(1);
+        }
+        
+        /* Suggestion Chips */
+        .query-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .suggestion-chip {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .suggestion-chip:hover {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+            transform: translateY(-1px);
+        }
+
+        /* Mode Toggle */
+        .search-mode-toggle {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: 25px;
+            padding: 0.25rem;
+            margin: 2rem auto;
+            width: fit-content;
+        }
+        
+        .mode-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-weight: 500;
+        }
+        
+        .mode-btn.active {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+        }
+
+        /* Parsing Feedback */
+        .parsing-feedback {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem auto;
+            display: none;
+            max-width: 800px;
+        }
+        
+        .parsing-success {
+            border-color: var(--accent-green);
+            background: rgba(81, 207, 102, 0.1);
+        }
+        
+        .parsing-warning {
+            border-color: var(--accent-yellow);
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-yellow), var(--accent-green));
+            transition: var(--transition-smooth);
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin: 1rem auto;
+            justify-content: center;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: typing 1.5s infinite;
+        }
+        
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+
+        /* Results */
+        .results-header {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background: rgba(81, 207, 102, 0.1);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+        
+        .alert-info {
+            background: var(--bg-secondary);
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        /* Empty State */
+        .empty-state-icon {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-primary);
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .footer-timestamp {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem !important;
+            }
+            
+            .peoplegpt-container {
+                padding: 2rem 0;
+            }
+            
+            .navbar-nav {
+                display: none;
+            }
+            
+            .main-container {
+                padding: 0 1rem;
+            }
+            
+            .query-suggestions {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="/" class="navbar-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </a>
+                <ul class="navbar-nav">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/upload" class="nav-link">Upload Resume</a></li>
+                    <li><a href="/search" class="nav-link active">Search Candidates</a></li>
+                    <li><a href="/analytics" class="nav-link">Analytics</a></li>
+                </ul>
+                <div class="navbar-text">
+                    <i class="fas fa-user-circle icon"></i>
+                    <span id="currentUser">pranamya-jain</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- PeopleGPT Interface -->
+        <div class="peoplegpt-container">
+            <div class="main-container">
+                <div class="centered-content">
+                    <h1 class="hero-title mb-3">
+                        <i class="fas fa-comments icon-large"></i> PeopleGPT
+                    </h1>
+                    <p class="hero-subtitle mb-4">
+                        Search candidates using natural language - just describe who you're looking for
+                    </p>
+                    
+                    <div class="datetime-display mb-4">
+                        <i class="fas fa-clock icon"></i>
+                        <span id="currentDateTime">2025-05-31 19:04:31</span> IST
+                        <span class="text-muted" style="margin-left: 1rem;">
+                            <i class="fas fa-user icon"></i> pranamya-jain (Team Seeds! 🌱)
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Search Mode Toggle -->
+                <div class="search-mode-toggle">
+                    <button class="mode-btn active" id="nlpMode" onclick="switchMode('nlp')">
+                        <i class="fas fa-comments icon"></i> Natural Language
+                    </button>
+                    <button class="mode-btn" id="advancedMode" onclick="switchMode('advanced')">
+                        <i class="fas fa-sliders-h icon"></i> Advanced Search
+                    </button>
+                </div>
+                
+                <!-- Chat Interface -->
+                <div id="nlpSearchPanel">
+                    <div class="chat-input-container">
+                        <textarea 
+                            id="chatInput" 
+                            class="chat-input"
+                            placeholder="Ask me anything... 'Find senior Python developers in SF, remote OK' or 'Show me React engineers with 3+ years'"
+                            rows="1"
+                        ></textarea>
+                        <button id="chatSendBtn" class="chat-send-btn" onclick="processPeopleGPTQuery()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Typing Indicator -->
+                    <div id="typingIndicator" class="typing-indicator">
+                        <span>PeopleGPT is thinking</span>
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Parsing Feedback -->
+                    <div id="parsingFeedback" class="parsing-feedback">
+                        <!-- Parsing results will be shown here -->
+                    </div>
+                    
+                    <!-- Query Suggestions -->
+                    <div class="query-suggestions">
+                        <div class="suggestion-chip" onclick="useQuery('Find senior Python developers in San Francisco')">
+                            <i class="fas fa-code"></i> Senior Python devs in SF
+                        </div>
+                        <div class="suggestion-chip" onclick="useQuery('Show me React engineers with 3+ years, remote OK')">
+                            <i class="fas fa-laptop-code"></i> React engineers, 3+ years
+                        </div>
+                        <div class="suggestion-chip" onclick="useQuery('Looking for ML engineers in NYC or remote')">
+                            <i class="fas fa-brain"></i> ML engineers NYC/remote
+                        </div>
+                        <div class="suggestion-chip" onclick="useQuery('DevOps engineers with AWS experience')">
+                            <i class="fas fa-cloud"></i> DevOps + AWS
+                        </div>
+                        <div class="suggestion-chip" onclick="useQuery('Junior Java developers in Seattle')">
+                            <i class="fas fa-coffee"></i> Junior Java Seattle
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <!-- Results Section -->
+            <div id="searchResults">
+                <!-- Results Header -->
+                <div id="results-header" style="display: none;">
+                    <!-- Results header will be populated -->
+                </div>
+                
+                <!-- Results List -->
+                <div id="results-list">
+                    <!-- Results list will be populated -->
+                </div>
+                
+                <!-- Empty State -->
+                <div id="empty-state" class="centered-content" style="min-height: 400px;">
+                    <i class="fas fa-comments empty-state-icon"></i>
+                    <h3 class="text-secondary mb-3">Ready to Search with PeopleGPT</h3>
+                    <p class="text-secondary">Describe who you're looking for in natural language, or try one of the suggestions above.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </div>
+                <p class="footer-text">
+                    Built with ❤️ by <strong>Team Seeds! 🌱</strong><br>
+                    PeopleGPT - Natural language candidate search powered by AI
+                </p>
+                <div class="footer-timestamp">
+                    <i class="fas fa-clock icon-only"></i>
+                    <span id="footerDateTime">2025-05-31 19:04:31</span> IST
+                    <span class="text-muted" style="margin-left: 1rem;">
+                        <i class="fas fa-seedling icon-only"></i> Team Seeds
+                    </span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let currentUser = 'pranamya-jain';
+        let currentMode = 'nlp';
+
+        // Update live datetime to IST (UTC +5:30)
+        function updateDateTime() {
+            const now = new Date();
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istTime = new Date(now.getTime() + istOffset);
+            const istString = istTime.toISOString().slice(0, 19).replace('T', ' ');
+            document.getElementById('currentDateTime').textContent = istString;
+            document.getElementById('footerDateTime').textContent = istString;
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('nlpMode').classList.toggle('active', mode === 'nlp');
+            document.getElementById('advancedMode').classList.toggle('active', mode === 'advanced');
+            console.log('Switched to mode:', mode);
+        }
+
+        function useQuery(query) {
+            document.getElementById('chatInput').value = query;
+            document.getElementById('chatInput').focus();
+            setTimeout(() => {
+                processPeopleGPTQuery();
+            }, 500);
+        }
+
+        // 🔧 FIXED: PeopleGPT Query Processing with Backend Integration
+        async function processPeopleGPTQuery() {
+            const query = document.getElementById('chatInput').value.trim();
+            if (!query) return;
+            
+            console.log('🗨️ PeopleGPT Query:', query);
+            
+            // Show typing indicator
+            showTypingIndicator();
+            hideEmptyState();
+            
+            try {
+                console.log('📡 Sending request to /api/peoplegpt_search...');
+                
+                const response = await fetch('/api/peoplegpt_search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query })
+                });
+                
+                console.log('📡 Response status:', response.status);
+                
+                const data = await response.json();
+                console.log('📡 Response data:', data);
+                
+                if (data.success) {
+                    showParsingFeedback(data.parsed_query);
+                    displaySearchResults(data.candidates, data.parsed_query, data.original_query);
+                } else {
+                    showErrorFeedback(data.error || 'Search failed');
+                }
+                
+            } catch (error) {
+                console.error('❌ PeopleGPT Error:', error);
+                showErrorFeedback('Failed to connect to PeopleGPT backend. Please check if the server is running.');
+            } finally {
+                hideTypingIndicator();
+            }
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'flex';
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function hideEmptyState() {
+            document.getElementById('empty-state').style.display = 'none';
+        }
+
+        function showParsingFeedback(parsedQuery) {
+            const feedbackDiv = document.getElementById('parsingFeedback');
+            const confidence = parsedQuery.confidence_score || 0.9;
+            
+            let feedbackClass = 'parsing-success';
+            let icon = 'fa-check-circle';
+            let message = 'Query understood perfectly!';
+            
+            if (confidence < 0.7) {
+                feedbackClass = 'parsing-warning';
+                icon = 'fa-exclamation-triangle';
+                message = 'Query partially understood. Results may vary.';
+            }
+            
+            feedbackDiv.className = `parsing-feedback ${feedbackClass}`;
+            feedbackDiv.innerHTML = `
+                <div class="flex-between mb-2">
+                    <span><i class="fas ${icon} icon"></i> ${message}</span>
+                    <span class="text-muted">${(confidence * 100).toFixed(0)}% confidence</span>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" style="width: ${confidence * 100}%"></div>
+                </div>
+                <div class="mt-2">
+                    <strong>Interpreted as:</strong> ${parsedQuery.job_description}
+                </div>
+                ${parsedQuery.suggestions && parsedQuery.suggestions.length > 0 ? `
+                    <div class="mt-2">
+                        <strong>Suggestions:</strong> ${parsedQuery.suggestions.join(', ')}
+                    </div>
+                ` : ''}
+            `;
+            feedbackDiv.style.display = 'block';
+        }
+
+        function showErrorFeedback(error) {
+            const feedbackDiv = document.getElementById('parsingFeedback');
+            feedbackDiv.className = 'parsing-feedback parsing-warning';
+            feedbackDiv.innerHTML = `
+                <div><i class="fas fa-exclamation-triangle icon"></i> ${error}</div>
+                <div class="mt-2">Try rephrasing your query or check if candidates are uploaded.</div>
+            `;
+            feedbackDiv.style.display = 'block';
+        }
+
+        function displaySearchResults(candidates, parsedQuery, originalQuery) {
+            console.log('📊 Displaying results:', candidates.length, 'candidates');
+            
+            // Show results header
+            const resultsHeader = document.getElementById('results-header');
+            resultsHeader.innerHTML = `
+                <div class="results-header">
+                    <div class="flex-between mb-3">
+                        <h3 class="mb-0">
+                            <i class="fas fa-comments icon"></i>
+                            PeopleGPT found <span>${candidates.length}</span> candidates
+                        </h3>
+                        <div class="flex-center" style="gap: 0.5rem;">
+                            <span class="text-muted">Searched by ${currentUser} (Team Seeds! 🌱)</span>
+                        </div>
+                    </div>
+                    <div class="alert alert-success">
+                        <strong>Query:</strong> "${originalQuery}"<br>
+                        <strong>Interpreted as:</strong> ${parsedQuery.job_description}
+                    </div>
+                </div>
+            `;
+            resultsHeader.style.display = 'block';
+            
+            // Display candidates
+            const resultsList = document.getElementById('results-list');
+            
+            if (candidates.length === 0) {
+                resultsList.innerHTML = `
+                    <div class="alert alert-info">
+                        <h4><i class="fas fa-info-circle icon"></i> No Candidates Found</h4>
+                        <p>PeopleGPT understood your query but couldn't find matching candidates.</p>
+                        <p><strong>Try:</strong> Upload more resumes or broaden your search criteria.</p>
+                        <a href="/upload" class="nav-link" style="color: var(--accent-green); text-decoration: underline;">
+                            <i class="fas fa-upload icon"></i> Upload Resumes
+                        </a>
+                    </div>
+                `;
+            } else {
+                let candidatesHTML = '<div class="candidates-grid" style="display: grid; gap: 1rem;">';
+                
+                candidates.forEach((candidate, index) => {
+                    candidatesHTML += `
+                        <div class="candidate-card" style="background: var(--bg-card); border: 1px solid var(--border-primary); border-radius: 8px; padding: 1.5rem;">
+                            <div class="flex-between mb-2">
+                                <h4 style="color: var(--accent-green); margin: 0;">
+                                    <i class="fas fa-user icon"></i>${candidate.name || 'Anonymous Candidate'}
+                                </h4>
+                                <span class="match-score" style="background: var(--accent-green); color: var(--bg-primary); padding: 0.25rem 0.75rem; border-radius: 12px; font-weight: bold;">
+                                    ${candidate.match_score || 85}% Match
+                                </span>
+                            </div>
+                            
+                            <div class="candidate-details" style="color: var(--text-secondary); margin-bottom: 1rem;">
+                                <div><i class="fas fa-briefcase icon"></i>${candidate.experience_years || 'N/A'} years experience</div>
+                                <div><i class="fas fa-map-marker-alt icon"></i>${candidate.location || 'Location not specified'}</div>
+                                <div><i class="fas fa-envelope icon"></i>${candidate.email || 'Email not provided'}</div>
+                            </div>
+                            
+                            <div class="skills-section" style="margin-bottom: 1rem;">
+                                <strong style="color: var(--text-primary);">Skills:</strong>
+                                <div style="margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.25rem;">
+                                    ${(candidate.skills || []).map(skill => 
+                                        `<span style="background: var(--bg-secondary); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.8rem;">${skill}</span>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                            
+                            ${candidate.match_reasons && candidate.match_reasons.length > 0 ? `
+                                <div class="match-reasons">
+                                    <strong style="color: var(--text-primary);">Why this candidate matches:</strong>
+                                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: var(--text-secondary);">
+                                        ${candidate.match_reasons.map(reason => `<li>${reason}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+                
+                candidatesHTML += '</div>';
+                resultsList.innerHTML = candidatesHTML;
+            }
+        }
+
+        // Auto-resize textarea and enable/disable send button
+        document.getElementById('chatInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+            
+            const sendBtn = document.getElementById('chatSendBtn');
+            sendBtn.disabled = !this.value.trim();
+        });
+
+        // Handle Enter key
+        document.getElementById('chatInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                processPeopleGPTQuery();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 PeopleGPT Frontend Initialized');
+            console.log('👤 User:', currentUser);
+            console.log('🕐 Current Time:', '2025-05-31 19:04:31 UTC');
+            
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            document.getElementById('chatSendBtn').disabled = true;
+            
+            // Test backend connection
+            fetch('/api/health')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('✅ Backend Health Check:', data);
+                    if (data.peoplegpt_enabled) {
+                        console.log('🗨️ PeopleGPT Backend Ready!');
+                    } else {
+                        console.warn('⚠️ PeopleGPT Backend Not Fully Available');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Backend Connection Failed:', error);
+                });
+        });
+    </script>
+</body>
+</html>

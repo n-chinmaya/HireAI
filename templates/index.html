@@ -3,263 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HireAI - Intelligent Resume Matching</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>HireAI - AI-Powered Recruitment Platform</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 100px 0;
-        }
-        .feature-card {
-            transition: transform 0.3s;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-        .ai-status {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-        }
-    </style>
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
 </head>
 <body>
-    <!-- AI Status Indicator -->
-    <div class="ai-status">
-        <span id="ai-status" class="badge bg-warning">
-            <i class="fas fa-robot"></i> AI: Checking...
-        </span>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-brain me-2"></i>HireAI
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/upload">Upload Resume</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/search">Search Candidates</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/analytics">Analytics</a>
-                    </li>
+    <div class="main-wrapper">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="/" class="navbar-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </a>
+                <ul class="navbar-nav">
+                    <li><a href="/" class="nav-link active">Home</a></li>
+                    <li><a href="/upload" class="nav-link">Upload Resume</a></li>
+                    <li><a href="/search" class="nav-link">Search Candidates</a></li>
+                    <li><a href="/analytics" class="nav-link">Analytics</a></li>
                 </ul>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container text-center">
-            <h1 class="display-4 fw-bold mb-4">
-                <i class="fas fa-brain me-3"></i>HireAI
-            </h1>
-            <p class="lead mb-5">
-                Intelligent Resume Matching Powered by AI<br>
-                Find the perfect candidates faster than ever before
-            </p>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="d-grid gap-3 d-md-flex justify-content-md-center">
-                        <a href="/upload" class="btn btn-light btn-lg">
-                            <i class="fas fa-upload me-2"></i>Upload Resume
+        <!-- Hero Section with Flexbox Centering -->
+        <div class="centered-container">
+            <div class="main-container">
+                <div class="centered-content animate-fadeInUp">
+                    <h1 class="hero-title">
+                        <i class="fas fa-brain icon-large"></i>
+                        Smart Recruitment with AI
+                    </h1>
+                    <p class="hero-subtitle">
+                        Transform your hiring process with intelligent resume parsing, 
+                        AI-powered candidate matching, and comprehensive analytics dashboard.
+                    </p>
+                    
+                    <div class="flex-center" style="gap: 1rem; margin-bottom: 3rem;">
+                        <a href="/upload" class="btn btn-primary btn-large animate-fadeInLeft">
+                            <i class="fas fa-upload icon"></i> Upload Resumes
                         </a>
-                        <a href="/search" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-search me-2"></i>Search Candidates
+                        <a href="/search" class="btn btn-large animate-fadeInLeft">
+                            <i class="fas fa-search icon"></i> Search Candidates
+                        </a>
+                    </div>
+
+                    <!-- Live Stats Section -->
+                    <div class="grid grid-3 animate-fadeInUp" style="max-width: 800px; margin: 0 auto;">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div class="text-success" style="font-size: 2rem; font-weight: 700;">500+</div>
+                                <div class="text-secondary">Resumes Processed</div>
+                            </div>
+                        </div>
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div class="text-success" style="font-size: 2rem; font-weight: 700;">95%</div>
+                                <div class="text-secondary">Accuracy Rate</div>
+                            </div>
+                        </div>
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div class="text-success" style="font-size: 2rem; font-weight: 700;">50+</div>
+                                <div class="text-secondary">Companies Trust Us</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="main-container">
+            <div class="content-wrapper">
+                <h2 class="section-title">Powerful Features</h2>
+                
+                <div class="grid grid-3">
+                    <div class="card animate-fadeInUp">
+                        <div class="card-body text-center">
+                            <div class="flex-center-column mb-3">
+                                <i class="fas fa-file-alt text-success" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <h3>Smart Resume Parsing</h3>
+                            </div>
+                            <p class="text-secondary">
+                                Advanced AI extracts key information from resumes including skills, 
+                                experience, education, and contact details with 95% accuracy.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fadeInUp">
+                        <div class="card-body text-center">
+                            <div class="flex-center-column mb-3">
+                                <i class="fas fa-search text-success" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <h3>AI-Powered Matching</h3>
+                            </div>
+                            <p class="text-secondary">
+                                Intelligent algorithms match candidates to job requirements, 
+                                providing match scores and detailed reasoning for each candidate.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fadeInUp">
+                        <div class="card-body text-center">
+                            <div class="flex-center-column mb-3">
+                                <i class="fas fa-chart-bar text-success" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <h3>Analytics Dashboard</h3>
+                            </div>
+                            <p class="text-secondary">
+                                Comprehensive insights into your talent pipeline with interactive 
+                                charts, skill distribution analysis, and hiring trends.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fadeInUp">
+                        <div class="card-body text-center">
+                            <div class="flex-center-column mb-3">
+                                <i class="fas fa-shield-alt text-success" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <h3>Secure & Private</h3>
+                            </div>
+                            <p class="text-secondary">
+                                Enterprise-grade security ensures candidate data privacy 
+                                with encrypted storage and secure file handling.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fadeInUp">
+                        <div class="card-body text-center">
+                            <div class="flex-center-column mb-3">
+                                <i class="fas fa-download text-success" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <h3>Export & Integration</h3>
+                            </div>
+                            <p class="text-secondary">
+                                Export candidate data in multiple formats (CSV, JSON, PDF) 
+                                and integrate with existing HR systems seamlessly.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fadeInUp">
+                        <div class="card-body text-center">
+                            <div class="flex-center-column mb-3">
+                                <i class="fas fa-clock text-success" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <h3>Real-time Processing</h3>
+                            </div>
+                            <p class="text-secondary">
+                                Lightning-fast resume processing and instant search results 
+                                to accelerate your recruitment workflow.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <div style="background: var(--bg-secondary); padding: 4rem 0;">
+            <div class="main-container">
+                <h2 class="section-title">How It Works</h2>
+                
+                <div class="grid grid-3">
+                    <div class="flex-center-column animate-fadeInUp">
+                        <div class="flex-center" style="width: 80px; height: 80px; background: var(--accent-green); border-radius: 50%; margin-bottom: 1.5rem;">
+                            <span style="font-size: 2rem; font-weight: 700; color: var(--bg-primary);">1</span>
+                        </div>
+                        <h3 class="text-center">Upload Resumes</h3>
+                        <p class="text-secondary text-center">
+                            Simply drag and drop resume files or browse to upload. 
+                            Supports PDF, DOCX, and DOC formats.
+                        </p>
+                    </div>
+
+                    <div class="flex-center-column animate-fadeInUp">
+                        <div class="flex-center" style="width: 80px; height: 80px; background: var(--accent-green); border-radius: 50%; margin-bottom: 1.5rem;">
+                            <span style="font-size: 2rem; font-weight: 700; color: var(--bg-primary);">2</span>
+                        </div>
+                        <h3 class="text-center">AI Processing</h3>
+                        <p class="text-secondary text-center">
+                            Our AI extracts and structures candidate information, 
+                            identifying skills, experience, and qualifications.
+                        </p>
+                    </div>
+
+                    <div class="flex-center-column animate-fadeInUp">
+                        <div class="flex-center" style="width: 80px; height: 80px; background: var(--accent-green); border-radius: 50%; margin-bottom: 1.5rem;">
+                            <span style="font-size: 2rem; font-weight: 700; color: var(--bg-primary);">3</span>
+                        </div>
+                        <h3 class="text-center">Smart Matching</h3>
+                        <p class="text-secondary text-center">
+                            Search with job descriptions to get AI-powered candidate 
+                            recommendations with detailed match analysis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="main-container">
+            <div class="content-wrapper">
+                <div class="centered-content">
+                    <h2 class="section-title">Ready to Transform Your Hiring?</h2>
+                    <p class="hero-subtitle">
+                        Join leading companies using AI to find the best talent faster and more efficiently.
+                    </p>
+                    
+                    <div class="flex-center" style="gap: 1rem;">
+                        <a href="/upload" class="btn btn-primary btn-large">
+                            <i class="fas fa-rocket icon"></i> Get Started Now
+                        </a>
+                        <a href="/analytics" class="btn btn-large">
+                            <i class="fas fa-chart-line icon"></i> View Demo
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row text-center mb-5">
-                <div class="col-12">
-                    <h2 class="fw-bold">Why Choose HireAI?</h2>
-                    <p class="text-muted">Streamline your recruitment process with intelligent automation</p>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain icon"></i> HireAI
+                </div>
+                <p class="footer-text">
+                    Built with ❤️ by <strong>Team Seeds! 🌱</strong><br>
+                    Revolutionizing recruitment with artificial intelligence
+                </p>
+                <div class="footer-timestamp">
+                    <i class="fas fa-clock icon-only"></i>
+                    <span id="currentDateTime">2025-05-31 23:17:23</span> IST
                 </div>
             </div>
-            
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card feature-card h-100 text-center p-4">
-                        <div class="card-body">
-                            <i class="fas fa-robot fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">AI-Powered Matching</h5>
-                            <p class="card-text">
-                                Advanced algorithms analyze resumes and match candidates based on skills, experience, and job requirements.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="card feature-card h-100 text-center p-4">
-                        <div class="card-body">
-                            <i class="fas fa-file-pdf fa-3x text-success mb-3"></i>
-                            <h5 class="card-title">Smart Resume Parsing</h5>
-                            <p class="card-text">
-                                Automatically extract and structure information from PDF and DOCX resumes with high accuracy.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="card feature-card h-100 text-center p-4">
-                        <div class="card-body">
-                            <i class="fas fa-chart-bar fa-3x text-info mb-3"></i>
-                            <h5 class="card-title">Detailed Analytics</h5>
-                            <p class="card-text">
-                                Get insights into your candidate pool with comprehensive analytics and visualizations.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </footer>
+    </div>
 
-    <!-- Stats Section -->
-    <section class="bg-light py-5">
-        <div class="container">
-            <div class="row text-center" id="stats-section">
-                <div class="col-md-3">
-                    <h3 class="fw-bold text-primary" id="total-candidates">0</h3>
-                    <p class="text-muted">Candidates Processed</p>
-                </div>
-                <div class="col-md-3">
-                    <h3 class="fw-bold text-success">95%</h3>
-                    <p class="text-muted">Parsing Accuracy</p>
-                </div>
-                <div class="col-md-3">
-                    <h3 class="fw-bold text-info">80%</h3>
-                    <p class="text-muted">Time Saved</p>
-                </div>
-                <div class="col-md-3">
-                    <h3 class="fw-bold text-warning" id="ai-status-stat">AI Ready</h3>
-                    <p class="text-muted">System Status</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- How It Works -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row text-center mb-5">
-                <div class="col-12">
-                    <h2 class="fw-bold">How It Works</h2>
-                    <p class="text-muted">Simple steps to find your ideal candidates</p>
-                </div>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-md-3 text-center">
-                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                        <span class="fw-bold">1</span>
-                    </div>
-                    <h5>Upload Resumes</h5>
-                    <p class="text-muted">Upload candidate resumes in PDF or DOCX format</p>
-                </div>
-                
-                <div class="col-md-3 text-center">
-                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                        <span class="fw-bold">2</span>
-                    </div>
-                    <h5>AI Processing</h5>
-                    <p class="text-muted">Our AI extracts and analyzes candidate information</p>
-                </div>
-                
-                <div class="col-md-3 text-center">
-                    <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                        <span class="fw-bold">3</span>
-                    </div>
-                    <h5>Job Matching</h5>
-                    <p class="text-muted">Enter job requirements and get matched candidates</p>
-                </div>
-                
-                <div class="col-md-3 text-center">
-                    <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                        <span class="fw-bold">4</span>
-                    </div>
-                    <h5>Make Decisions</h5>
-                    <p class="text-muted">Review ranked candidates and make informed hiring decisions</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="fas fa-brain me-2"></i>HireAI</h5>
-                    <p class="text-muted">Intelligent recruitment solutions powered by AI</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="text-muted mb-0">&copy; 2025 HireAI. Built with ❤️ by Pranamya</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Check system health and update UI
-        async function checkSystemHealth() {
-            try {
-                const response = await fetch('/api/health');
-                const data = await response.json();
-                
-                const aiStatus = document.getElementById('ai-status');
-                const aiStatusStat = document.getElementById('ai-status-stat');
-                const totalCandidates = document.getElementById('total-candidates');
-                
-                if (data.ai_enabled) {
-                    aiStatus.className = 'badge bg-success';
-                    aiStatus.innerHTML = '<i class="fas fa-robot"></i> AI: Active';
-                    aiStatusStat.textContent = 'AI Active';
-                    aiStatusStat.className = 'fw-bold text-success';
-                } else {
-                    aiStatus.className = 'badge bg-warning';
-                    aiStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> AI: Limited';
-                    aiStatusStat.textContent = 'Basic Mode';
-                    aiStatusStat.className = 'fw-bold text-warning';
-                }
-                
-                totalCandidates.textContent = data.total_candidates || 0;
-                
-            } catch (error) {
-                console.error('Health check failed:', error);
-                const aiStatus = document.getElementById('ai-status');
-                aiStatus.className = 'badge bg-danger';
-                aiStatus.innerHTML = '<i class="fas fa-times"></i> AI: Error';
-            }
+        // Update live datetime to IST
+        function updateDateTime() {
+            const now = new Date();
+            // Convert UTC to IST (UTC + 5:30)
+            const istOffset = 5.5 * 60 * 60 * 1000; // 5.5 hours in milliseconds
+            const istTime = new Date(now.getTime() + istOffset);
+            const istString = istTime.toISOString().slice(0, 19).replace('T', ' ');
+            document.getElementById('currentDateTime').textContent = istString;
         }
-        
-        // Load health check on page load
-        document.addEventListener('DOMContentLoaded', checkSystemHealth);
+
+        // Add smooth animations on scroll
+        function addScrollAnimations() {
+            const animateElements = document.querySelectorAll('.animate-fadeInUp, .animate-fadeInLeft');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) translateX(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animateElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transition = 'all 0.6s ease-out';
+                if (el.classList.contains('animate-fadeInUp')) {
+                    el.style.transform = 'translateY(30px)';
+                } else if (el.classList.contains('animate-fadeInLeft')) {
+                    el.style.transform = 'translateX(-30px)';
+                }
+                observer.observe(el);
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            addScrollAnimations();
+        });
     </script>
 </body>
 </html>
